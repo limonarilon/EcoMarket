@@ -147,6 +147,15 @@
     initJarallax();
     initChocolat();
 
+    // Modal al enviar solo el formulario de registro
+    var $form = $('#registroForm');
+    if ($form.length && $('#modalEnvio').length) {
+      $form.on('submit', function(e) {
+        e.preventDefault();
+        var modal = new bootstrap.Modal(document.getElementById('modalEnvio'));
+        modal.show();
+      });
+    }
   }); // End of a document
 
 })(jQuery);
