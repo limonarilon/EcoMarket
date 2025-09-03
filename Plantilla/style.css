@@ -422,7 +422,7 @@ h1,h2,h3,h4,h5,h6 {
   bottom: 6px;
 }
 .banner-ad .banner-content .sale:after {
-  content: 'SALE';
+content: '¡Descubrir!';
   font-family: var(--body-font);
   position: absolute;
   font-size: 11px;
