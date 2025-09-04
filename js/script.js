@@ -5,11 +5,11 @@
     $(document).ready(function() {
       $('body').addClass('preloader-site');
 
-      // Ocultar preloader tras 3 segundos si no se carga todo
+      // Ocultar preloader tras 1.5 segundos si no se carga todo
       setTimeout(function() {
         $('.preloader-wrapper').fadeOut();
         $('body').removeClass('preloader-site');
-      }, 3000);
+      }, 1500);
     });
 
     $(window).on('load', function() {
