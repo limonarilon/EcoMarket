@@ -157,7 +157,7 @@ body {
   --bs-btn-bg: #7ae582ff;
   --bs-btn-border-color: transparent;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #f7a422;
+  --bs-btn-hover-bg: #3de8df;
   --bs-btn-hover-border-color: transparent;
   --bs-btn-focus-shadow-rgb: 49,132,253;
   --bs-btn-active-color: #fff;
@@ -453,7 +453,7 @@ content: '¡Descubrir!';
   text-align: center;
   border-radius: 10px;
   --bs-btn-border-color: transparent;
-  --bs-btn-active-bg: #ec9b22;
+  --bs-btn-active-bg:#604b24;
   --bs-btn-active-border-color: transparent;
   --bs-btn-hover-bg: #7ae582ff;
   --bs-btn-hover-border-color: transparent;
