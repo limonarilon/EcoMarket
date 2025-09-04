@@ -24,7 +24,7 @@
         <nav class="navbar navbar-expand-xl">
             <div class="container h-100">
                 <a class="navbar-brand" href="index.html">
-                    <h1 class="tm-site-title mb-0">Product Admin</h1>
+                    <h1 class="tm-site-title mb-0">Back Office EcoMarket</h1>
                 </a>
                 <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,22 +50,22 @@
                                 </span>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Daily Report</a>
-                                <a class="dropdown-item" href="#">Weekly Report</a>
-                                <a class="dropdown-item" href="#">Yearly Report</a>
+                                <a class="dropdown-item" href="#">Reporte diario</a>
+                                <a class="dropdown-item" href="#">Reporte semanal</a>
+                                <a class="dropdown-item" href="#">Reporte anual</a>
                             </div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="products.html">
                                 <i class="fas fa-shopping-cart"></i>
-                                Products
+                                Productos
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="accounts.html">
                                 <i class="far fa-user"></i>
-                                Accounts
+                                Cuentas
                             </a>
                         </li>
                         <li class="nav-item dropdown">
@@ -73,20 +73,20 @@
                                 aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-cog"></i>
                                 <span>
-                                    Settings <i class="fas fa-angle-down"></i>
+                                    Configuración <i class="fas fa-angle-down"></i>
                                 </span>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Profile</a>
-                                <a class="dropdown-item" href="#">Billing</a>
-                                <a class="dropdown-item" href="#">Customize</a>
+                                <a class="dropdown-item" href="#">Perfil</a>
+                                <a class="dropdown-item" href="#">Facturación</a>
+                                <a class="dropdown-item" href="#">Personalizar</a>
                             </div>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link d-block" href="login.html">
-                                Admin, <b>Logout</b>
+                                Admin, <b>Salir</b>
                             </a>
                         </li>
                     </ul>
@@ -97,26 +97,26 @@
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <p class="text-white mt-5 mb-5">Welcome back, <b>Admin</b></p>
+                    <p class="text-white mt-5 mb-5">Bienvenido de nuevo, <b>Admin</b></p>
                 </div>
             </div>
             <!-- row -->
             <div class="row tm-content-row">
                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                     <div class="tm-bg-primary-dark tm-block">
-                        <h2 class="tm-block-title">Latest Hits</h2>
+                        <h2 class="tm-block-title">Últimos Éxitos</h2>
                         <canvas id="lineChart"></canvas>
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                     <div class="tm-bg-primary-dark tm-block">
-                        <h2 class="tm-block-title">Performance</h2>
+                        <h2 class="tm-block-title">Rendimiento</h2>
                         <canvas id="barChart"></canvas>
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                     <div class="tm-bg-primary-dark tm-block tm-block-taller">
-                        <h2 class="tm-block-title">Storage Information</h2>
+                        <h2 class="tm-block-title">Información de Almacenamiento</h2>
                         <div id="pieChartContainer">
                             <canvas id="pieChart" class="chartjs-render-monitor" width="200" height="200"></canvas>
                         </div>                        
@@ -124,78 +124,78 @@
                 </div>
                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                     <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-overflow">
-                        <h2 class="tm-block-title">Notification List</h2>
+                        <h2 class="tm-block-title">Lista de Notificaciones</h2>
                         <div class="tm-notification-items">
                             <div class="media tm-notification-item">
                                 <div class="tm-gray-circle"><img src="img/notification-01.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
-                                    <p class="mb-2"><b>Jessica</b> and <b>6 others</b> sent you new <a href="#"
-                                            class="tm-notification-link">product updates</a>. Check new orders.</p>
-                                    <span class="tm-small tm-text-color-secondary">6h ago.</span>
+                                    <p class="mb-2"><b>María</b> y <b>otras 6 personas</b> te han enviado <a href="#"
+                                            class="tm-notification-link">actualizaciones de productos</a>. Ver nuevos pedidos.</p>
+                                    <span class="tm-small tm-text-color-secondary">hace 6hrs.</span>
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
                                 <div class="tm-gray-circle"><img src="img/notification-02.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
-                                    <p class="mb-2"><b>Oliver Too</b> and <b>6 others</b> sent you existing <a href="#"
-                                            class="tm-notification-link">product updates</a>. Read more reports.</p>
-                                    <span class="tm-small tm-text-color-secondary">6h ago.</span>
+                                    <p class="mb-2"><b>Paula</b> y <b>6 otros</b> te han enviado <a href="#"
+                                            class="tm-notification-link">actualizaciones de productos</a>. Ver más informes.</p>
+                                    <span class="tm-small tm-text-color-secondary">hace 6hrs.</span>
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
                                 <div class="tm-gray-circle"><img src="img/notification-03.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
-                                    <p class="mb-2"><b>Victoria</b> and <b>6 others</b> sent you <a href="#"
-                                            class="tm-notification-link">order updates</a>. Read order information.</p>
-                                    <span class="tm-small tm-text-color-secondary">6h ago.</span>
+                                    <p class="mb-2"><b>Victoria</b> y <b>6 otros</b> te han enviado <a href="#"
+                                            class="tm-notification-link">actualizaciones de pedidos</a>. Ver información del pedido.</p>
+                                    <span class="tm-small tm-text-color-secondary">hace 6hrs.</span>
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
                                 <div class="tm-gray-circle"><img src="img/notification-01.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
-                                    <p class="mb-2"><b>Laura Cute</b> and <b>6 others</b> sent you <a href="#"
-                                            class="tm-notification-link">product records</a>.</p>
-                                    <span class="tm-small tm-text-color-secondary">6h ago.</span>
+                                    <p class="mb-2"><b>Laura</b> y <b>6 otros</b> te han enviado <a href="#"
+                                            class="tm-notification-link">registros de productos</a>.</p>
+                                    <span class="tm-small tm-text-color-secondary">hace 6hrs.</span>
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
                                 <div class="tm-gray-circle"><img src="img/notification-02.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
-                                    <p class="mb-2"><b>Samantha</b> and <b>6 others</b> sent you <a href="#"
-                                            class="tm-notification-link">order stuffs</a>.</p>
-                                    <span class="tm-small tm-text-color-secondary">6h ago.</span>
+                                    <p class="mb-2"><b>Marcela</b> y <b>6 otros</b> te han enviado <a href="#"
+                                            class="tm-notification-link">actualizaciones de pedidos</a>.</p>
+                                    <span class="tm-small tm-text-color-secondary">hace 6hrs.</span>
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
                                 <div class="tm-gray-circle"><img src="img/notification-03.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
-                                    <p class="mb-2"><b>Sophie</b> and <b>6 others</b> sent you <a href="#"
-                                            class="tm-notification-link">product updates</a>.</p>
-                                    <span class="tm-small tm-text-color-secondary">6h ago.</span>
+                                    <p class="mb-2"><b>Sofia</b> y <b>6 otros</b> te han enviado <a href="#"
+                                            class="tm-notification-link">actualizaciones de productos</a>.</p>
+                                    <span class="tm-small tm-text-color-secondary">hace 6hrs.</span>
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
                                 <div class="tm-gray-circle"><img src="img/notification-01.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
-                                    <p class="mb-2"><b>Lily A</b> and <b>6 others</b> sent you <a href="#"
-                                            class="tm-notification-link">product updates</a>.</p>
-                                    <span class="tm-small tm-text-color-secondary">6h ago.</span>
+                                    <p class="mb-2"><b>Fernanda</b> y <b>6 otros</b> te han enviado <a href="#"
+                                            class="tm-notification-link">actualizaciones de productos</a>.</p>
+                                    <span class="tm-small tm-text-color-secondary">hace 6hrs.</span>
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
                                 <div class="tm-gray-circle"><img src="img/notification-02.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
-                                    <p class="mb-2"><b>Amara</b> and <b>6 others</b> sent you <a href="#"
-                                            class="tm-notification-link">product updates</a>.</p>
-                                    <span class="tm-small tm-text-color-secondary">6h ago.</span>
+                                    <p class="mb-2"><b>Amaira</b> y <b>6 otros</b> te han enviado <a href="#"
+                                            class="tm-notification-link">actualizaciones de productos</a>.</p>
+                                    <span class="tm-small tm-text-color-secondary">hace 6hrs.</span>
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
                                 <div class="tm-gray-circle"><img src="img/notification-03.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
-                                    <p class="mb-2"><b>Cinthela</b> and <b>6 others</b> sent you <a href="#"
-                                            class="tm-notification-link">product updates</a>.</p>
-                                    <span class="tm-small tm-text-color-secondary">6h ago.</span>
+                                    <p class="mb-2"><b>Fabiola</b> y <b>6 otros</b> te han enviado <a href="#"
+                                            class="tm-notification-link">actualizaciones de productos</a>.</p>
+                                    <span class="tm-small tm-text-color-secondary">hace 6hrs.</span>
                                 </div>
                             </div>
                         </div>
@@ -203,17 +203,17 @@
                 </div>
                 <div class="col-12 tm-block-col">
                     <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
-                        <h2 class="tm-block-title">Orders List</h2>
+                        <h2 class="tm-block-title">Lista de Pedidos</h2>
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">ORDER NO.</th>
-                                    <th scope="col">STATUS</th>
-                                    <th scope="col">OPERATORS</th>
-                                    <th scope="col">LOCATION</th>
-                                    <th scope="col">DISTANCE</th>
-                                    <th scope="col">START DATE</th>
-                                    <th scope="col">EST DELIVERY DUE</th>
+                                    <th scope="col">Nro. de orden</th>
+                                    <th scope="col">ESTADO</th>
+                                    <th scope="col">OPERADORES</th>
+                                    <th scope="col">UBICACIÓN</th>
+                                    <th scope="col">DISTANCIA</th>
+                                    <th scope="col">FECHA DE INICIO</th>
+                                    <th scope="col">FECHA DE ENTREGA ESTIMADA</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -221,133 +221,133 @@
                                     <th scope="row"><b>#122349</b></th>
                                     <td>
                                         <div class="tm-status-circle moving">
-                                        </div>Moving
+                                        </div>En reparto
                                     </td>
-                                    <td><b>Oliver Trag</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Leonardo</b></td>
+                                    <td><b>Tacla, Chile</b></td>
                                     <td><b>485 km</b></td>
-                                    <td>16:00, 12 NOV 2018</td>
-                                    <td>08:00, 18 NOV 2018</td>
+                                    <td>16:00, 12 NOV 2025</td>
+                                    <td>08:00, 18 NOV 2025</td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><b>#122348</b></th>
                                     <td>
                                         <div class="tm-status-circle pending">
-                                        </div>Pending
+                                        </div>Pendiente
                                     </td>
-                                    <td><b>Jacob Miller</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Joaquin</b></td>
+                                    <td><b>Temuco, Chile</b></td>
                                     <td><b>360 km</b></td>
-                                    <td>11:00, 10 NOV 2018</td>
-                                    <td>04:00, 14 NOV 2018</td>
+                                    <td>11:00, 10 NOV 2025</td>
+                                    <td>04:00, 14 NOV 2025</td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><b>#122347</b></th>
                                     <td>
                                         <div class="tm-status-circle cancelled">
-                                        </div>Cancelled
+                                        </div>Cancelado
                                     </td>
-                                    <td><b>George Wilson</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Jorge</b></td>
+                                    <td><b>Rancagua, Chile</b></td>
                                     <td><b>340 km</b></td>
-                                    <td>12:00, 22 NOV 2018</td>
-                                    <td>06:00, 28 NOV 2018</td>
+                                    <td>12:00, 22 NOV 2025</td>
+                                    <td>06:00, 28 NOV 2025</td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><b>#122346</b></th>
                                     <td>
                                         <div class="tm-status-circle moving">
-                                        </div>Moving
+                                        </div>En reparto
                                     </td>
-                                    <td><b>William Aung</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Felipe </b></td>
+                                    <td><b>Tacla, Chile</b></td>
                                     <td><b>218 km</b></td>
-                                    <td>15:00, 10 NOV 2018</td>
-                                    <td>09:00, 14 NOV 2018</td>
+                                    <td>15:00, 10 NOV 2025</td>
+                                    <td>09:00, 14 NOV 2025</td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><b>#122345</b></th>
                                     <td>
                                         <div class="tm-status-circle pending">
-                                        </div>Pending
+                                        </div>Pendiente
                                     </td>
-                                    <td><b>Harry Ryan</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Santiago</b></td>
+                                    <td><b>La serena, Chile</b></td>
                                     <td><b>280 km</b></td>
-                                    <td>15:00, 11 NOV 2018</td>
-                                    <td>09:00, 17 NOV 2018</td>
+                                    <td>15:00, 11 NOV 2025</td>
+                                    <td>09:00, 17 NOV 2025</td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><b>#122344</b></th>
                                     <td>
                                         <div class="tm-status-circle pending">
-                                        </div>Pending
+                                        </div>Pendiente
                                     </td>
-                                    <td><b>Michael Jones</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Miguel</b></td>
+                                    <td><b>Rancagua, Chile</b></td>
                                     <td><b>218 km</b></td>
-                                    <td>18:00, 12 OCT 2018</td>
-                                    <td>06:00, 18 OCT 2018</td>
+                                    <td>18:00, 12 OCT 2025</td>
+                                    <td>06:00, 18 OCT 2025</td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><b>#122343</b></th>
                                     <td>
                                         <div class="tm-status-circle moving">
-                                        </div>Moving
+                                        </div>En reparto
                                     </td>
-                                    <td><b>Timmy Davis</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Tomás</b></td>
+                                    <td><b>San Pedro de Atacama, Chile</b></td>
                                     <td><b>218 km</b></td>
-                                    <td>12:00, 10 OCT 2018</td>
-                                    <td>08:00, 18 OCT 2018</td>
+                                    <td>12:00, 10 OCT 2025</td>
+                                    <td>08:00, 18 OCT 2025</td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><b>#122342</b></th>
                                     <td>
                                         <div class="tm-status-circle moving">
-                                        </div>Moving
+                                        </div>En reparto
                                     </td>
-                                    <td><b>Oscar Phyo</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Oscar</b></td>
+                                    <td><b>Calama, Chile</b></td>
                                     <td><b>420 km</b></td>
-                                    <td>15:30, 06 OCT 2018</td>
-                                    <td>09:30, 16 OCT 2018</td>
+                                    <td>15:30, 06 OCT 2025</td>
+                                    <td>09:30, 16 OCT 2025</td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><b>#122341</b></th>
                                     <td>
                                         <div class="tm-status-circle moving">
-                                        </div>Moving
+                                        </div>En reparto
                                     </td>
-                                    <td><b>Charlie Brown</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Carlos</b></td>
+                                    <td><b>Rancagua, Chile</b></td>
                                     <td><b>300 km</b></td>
-                                    <td>11:00, 10 OCT 2018</td>
-                                    <td>03:00, 14 OCT 2018</td>
+                                    <td>11:00, 10 OCT 2025</td>
+                                    <td>03:00, 14 OCT 2025</td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><b>#122340</b></th>
                                     <td>
                                         <div class="tm-status-circle cancelled">
-                                        </div>Cancelled
+                                        </div>Cancelado
                                     </td>
-                                    <td><b>Wilson Cookies</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Wilson</b></td>
+                                    <td><b>Valparaíso, Chile</b></td>
                                     <td><b>218 km</b></td>
-                                    <td>17:30, 12 OCT 2018</td>
-                                    <td>08:30, 22 OCT 2018</td>
+                                    <td>17:30, 12 OCT 2025</td>
+                                    <td>08:30, 22 OCT 2025</td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><b>#122339</b></th>
                                     <td>
                                         <div class="tm-status-circle moving">
-                                        </div>Moving
+                                        </div>En reparto
                                     </td>
-                                    <td><b>Richard Clamon</b></td>
-                                    <td><b>London, UK</b></td>
+                                    <td><b>Ricardo</b></td>
+                                    <td><b>Calama, Chile</b></td>
                                     <td><b>150 km</b></td>
-                                    <td>15:00, 12 OCT 2018</td>
-                                    <td>09:20, 26 OCT 2018</td>
+                                    <td>15:00, 12 OCT 2025</td>
+                                    <td>09:20, 26 OCT 2025</td>
                                 </tr>
                             </tbody>
                         </table>
