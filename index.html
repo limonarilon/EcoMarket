@@ -86,37 +86,16 @@
         <div class="order-md-last">
           <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-primary">Carrito</span>
-            <span class="badge bg-primary rounded-pill">3</span>
+            <span id="cart-count-offcanvas" class="badge bg-primary rounded-pill">0</span>
           </h4>
-          <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">Aceite de coco</h6>
-                <small class="text-body-secondary">200 ml</small>
-              </div>
-              <span class="text-body-secondary">$9.990</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">Proteina vegetal</h6>
-                <small class="text-body-secondary">300 g</small>
-              </div>
-              <span class="text-body-secondary">$2.100</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">Quinoa</h6>
-                <small class="text-body-secondary">1 kg</small>
-              </div>
-              <span class="text-body-secondary">$5.990</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between">
-              <span>Total</span>
-              <strong>$18.080</strong>
-            </li>
+          <ul class="list-group mb-3" id="cart-items">
+            <!-- Productos del carrito se llenan dinámicamente -->
           </ul>
-  
-          <button class="w-100 btn btn-primary btn-lg" type="submit">Pagar</button>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span>Total</span>
+            <strong id="cart-total-offcanvas">$0</strong>
+          </div>
+          <button class="w-100 btn btn-primary btn-lg" type="button" id="btn-pagar">Pagar</button>
         </div>
       </div>
     </div>
@@ -191,6 +170,7 @@
               <li class="d-lg-none">
                 <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
                   <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cart"></use></svg>
+                  <span id="cart-count-mobile" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary d-lg-none" style="font-size:0.75rem;">0</span>
                 </a>
               </li>
               <li class="d-lg-none">
@@ -200,10 +180,11 @@
               </li>
             </ul>
 
-            <div class="cart text-end d-none d-lg-block dropdown">
-              <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+            <div class="cart text-end d-none d-lg-block dropdown position-relative">
+              <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1 position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
                 <span class="fs-6 text-muted dropdown-toggle">Carrito</span>
-                <span class="cart-total fs-5 fw-bold">$18.080</span>
+                <span class="cart-total fs-5 fw-bold" id="cart-total">$0</span>
+                <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size:0.75rem;">0</span>
               </button>
             </div>
           </div>
@@ -860,7 +841,6 @@
                                     <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
                                   </button>
                               </span>
-                              </span>
                               <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
                               <span class="input-group-btn">
                                   <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
@@ -1372,7 +1352,6 @@
       </div>
     </section>
 
-
     <section id="latest-blog" class="py-5">
       <div class="container-fluid">
         <div class="row">
@@ -1451,7 +1430,10 @@
       </div>
     </section>
 
-    
+  <!--- Carrito de Compras de prueba--->
+    <section id="productos"></section>
+    <h2>Carrito de Compras</h2>
+    <section id="carrito"></section>
 
     
 
@@ -1478,7 +1460,7 @@
             <div class="card mb-3 border-0">
               <div class="row">
                 <div class="col-md-2 text-dark">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M22 5H2a1 1 0 0 0-1 1v4a3 3 0 0 0 2 2.82V22a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-9.18A3 3 0 0 0 23 10V6a1 1 0 0 0-1-1Zm-7 2h2v3a1 1 0 0 1-2 0Zm-4 0h2v3a1 1 0 0 1-2 0ZM7 7h2v3a1 1 0 0 1-2 0Zm-3 4a1 1 0 0 1-1-1V7h2v3a1 1 0 0 1-1 1Zm10 10h-4v-2a2 2 0 0 1 4 0Zm5 0h-3v-2a4 4 0 0 0-8 0v2H5v-8.18a3.17 3.17 0 0 0 1-.6a3 3 0 0 0 4 0a3 3 0 0 0 4 0a3 3 0 0 0 4 0a3.17 3.17 0 0 0 1 .6Zm2-11a1 1 0 0 1-2 0V7h2ZM4.3 3H20a1 1 0 0 0 0-2H4.3a1 1 0 0 0 0 2Z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M22 5H2a1 1 0 0 0-1 1v4a3 3 0 0 0 2 2.82V22a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-9.18A3 3 0 0 0 23 10V6a1 1 0 0 0-1-1Zm-7 2h2v3a1 1 0 0 1-2 0v-3Zm-4 0h2v3a1 1 0 0 1-2 0v-3ZM7 7h2v3a1 1 0 0 1-2 0V7Zm-3 4a1 1 0 0 1-1-1V7h2v3a1 1 0 0 1-1 1Zm10 10h-4v-2a2 2 0 0 1 4 0Zm5 0h-3v-2a4 4 0 0 0-8 0v2H5v-8.18a3.17 3.17 0 0 0 1-.6a3 3 0 0 0 4 0a3 3 0 0 0 4 0a3 3 0 0 0 4 0a3.17 3.17 0 0 0 1 .6Zm2-11a1 1 0 0 1-2 0V7h2ZM4.3 3H20a1 1 0 0 0 0-2H4.3a1 1 0 0 0 0 2Z"/></svg>
                 </div>
                 <div class="col-md-10">
                   <div class="card-body p-0">
@@ -1509,10 +1491,9 @@
       </div>
     </section>
 
-    <footer class="py-5">
+       <footer class="py-5">
       <div class="container-fluid">
         <div class="row">
-
           <div class="col-lg-3 col-md-6 col-sm-6">
             <div class="footer-menu">
               <img src="images/ecomarket/logo--ecomarket.png" alt="logo">
@@ -1537,7 +1518,6 @@
               </div>
             </div>
           </div>
-
           <div class="col-md-2 col-sm-6">
             <div class="footer-menu">
               <h5 class="widget-title">EcoMarket</h5>
@@ -1623,7 +1603,6 @@
               </form>
             </div>
           </div>
-          
         </div>
       </div>
     </footer>
