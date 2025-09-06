@@ -717,3 +717,11 @@ content: '¡Descubrir!';
     height: 740px;
   }
 }
+
+.text-primary{
+  color:#25a18eff !important;
+}
+
+.bg-primary{
+  background-color:#25a18eff !important;
+}
