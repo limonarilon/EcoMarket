@@ -1,11 +1,90 @@
 import { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Featured from "./components/Featured";
 import BlogPost from "./components/BlogPost";
 import Footer from "./components/Footer";
-import Cart from "./components/Cart"; // nuevo componente
+import Cart from "./components/Cart";
+import RegisterForm from "./components/RegisterForm";
 import { Modal, Button } from "react-bootstrap";
 import "./App.css";
+
+// Componentes de páginas
+const Home = ({ products, onAddToCart }) => (
+  <div>
+    <Featured products={products} onAddToCart={onAddToCart} />
+    <BlogPost />
+  </div>
+);
+
+const Ofertas = () => (
+  <div className="container my-5">
+    <h2>Ofertas Especiales</h2>
+    <p>Aquí encontrarás nuestras mejores ofertas y descuentos.</p>
+  </div>
+);
+
+const Novedades = () => (
+  <div className="container my-5">
+    <h2>Novedades</h2>
+    <p>Descubre los productos más nuevos en EcoMarket.</p>
+  </div>
+);
+
+const FAQ = () => (
+  <div className="container my-5">
+    <h2>Preguntas Frecuentes</h2>
+    <div className="accordion" id="faqAccordion">
+      <div className="accordion-item">
+        <h2 className="accordion-header">
+          <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+            ¿Cómo puedo realizar un pedido?
+          </button>
+        </h2>
+        <div id="collapseOne" className="accordion-collapse collapse show">
+          <div className="accordion-body">
+            Puedes realizar tu pedido navegando por nuestros productos y agregándolos al carrito.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const About = () => (
+  <div className="container my-5">
+    <h2>Sobre EcoMarket</h2>
+    <p>EcoMarket es tu tienda de productos orgánicos y sustentables.</p>
+  </div>
+);
+
+const Contact = () => (
+  <div className="container my-5">
+    <h2>Contacto</h2>
+    <p>Ponte en contacto con nosotros para cualquier consulta.</p>
+  </div>
+);
+
+const Location = () => (
+  <div className="container my-5">
+    <h2>Ubicación</h2>
+    <p>Encuéntranos en nuestras tiendas físicas.</p>
+  </div>
+);
+
+const News = () => (
+  <div className="container my-5">
+    <h2>Noticias Relevantes</h2>
+    <p>Mantente al día con las últimas noticias sobre productos orgánicos y sustentabilidad.</p>
+  </div>
+);
+
+const TrackOrder = () => (
+  <div className="container my-5">
+    <h2>Seguimiento de Compra</h2>
+    <p>Rastrea el estado de tu pedido aquí.</p>
+  </div>
+);
 
 function App() {
   // Estado del carrito
@@ -77,21 +156,28 @@ function App() {
 
   return (
     <div className="App">
-      {/* Navbar recibe el carrito para mostrar contador si quieres */}
       <Navbar cart={cart} />
-
-      {/* Productos destacados */}
-      <Featured products={products} onAddToCart={handleAddToCart} />
-
-      {/* Carrito */}
-      <Cart
-        cart={cart}
-        onRemove={handleRemoveFromCart}
-        onUpdateQuantity={handleUpdateQuantity}
-      />
-
-      {/* Blog y footer */}
-      <BlogPost />
+      
+      <Routes>
+        <Route path="/" element={<Home products={products} onAddToCart={handleAddToCart} />} />
+        <Route path="/ofertas" element={<Ofertas />} />
+        <Route path="/novedades" element={<Novedades />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/location" element={<Location />} />
+        <Route path="/news" element={<News />} />
+        <Route path="/register" element={<RegisterForm />} />
+        <Route path="/track-order" element={<TrackOrder />} />
+        <Route path="/cart" element={
+          <Cart
+            cart={cart}
+            onRemove={handleRemoveFromCart}
+            onUpdateQuantity={handleUpdateQuantity}
+          />
+        } />
+      </Routes>
+      
       <Footer />
 
       {/* Modal de confirmación */}

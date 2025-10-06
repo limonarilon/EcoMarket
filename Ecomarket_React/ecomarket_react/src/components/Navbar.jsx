@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ cart }) => {
   // Calcular total de items en el carrito
@@ -45,16 +46,16 @@ const Navbar = ({ cart }) => {
 
                   <ul className="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
                     <li className="nav-item active">
-                      <a href="#women" className="nav-link">Inicio</a>
-                    </li>
-                    <li className="nav-item dropdown">
-                      <a href="#men" className="nav-link">Ofertas</a>
+                      <Link to="/" className="nav-link">Inicio</Link>
                     </li>
                     <li className="nav-item">
-                      <a href="#kids" className="nav-link">Novedades</a>
+                      <Link to="/ofertas" className="nav-link">Ofertas</Link>
                     </li>
                     <li className="nav-item">
-                      <a href="#accessories" className="nav-link">Preguntas frecuentes</a>
+                      <Link to="/novedades" className="nav-link">Novedades</Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/faq" className="nav-link">Preguntas frecuentes</Link>
                     </li>
 
                     <li className="nav-item dropdown">
@@ -68,25 +69,25 @@ const Navbar = ({ cart }) => {
                         Información
                       </a>
                       <ul className="dropdown-menu" aria-labelledby="pages">
-                        <li><a href="index.html" className="dropdown-item">Sobre EcoMarket</a></li>
-                        <li><a href="index.html" className="dropdown-item">Contacto</a></li>
-                        <li><a href="index.html" className="dropdown-item">Ubicación</a></li>
+                        <li><Link to="/about" className="dropdown-item">Sobre EcoMarket</Link></li>
+                        <li><Link to="/contact" className="dropdown-item">Contacto</Link></li>
+                        <li><Link to="/location" className="dropdown-item">Ubicación</Link></li>
                         <li>
-                          <a href="#cart" className="dropdown-item">
+                          <Link to="/cart" className="dropdown-item">
                             Carrito {totalItems > 0 && (
                               <span className="badge bg-success ms-2">{totalItems}</span>
                             )}
-                          </a>
+                          </Link>
                         </li>
-                        <li><a href="index.html" className="dropdown-item">Noticias relevantes</a></li>
+                        <li><Link to="/news" className="dropdown-item">Noticias relevantes</Link></li>
                       </ul>
                     </li>
 
                     <li className="nav-item">
-                      <a href="#brand" className="nav-link">Regístrate</a>
+                      <Link to="/register" className="nav-link">Regístrate</Link>
                     </li>
                     <li className="nav-item">
-                      <a href="#sale" className="nav-link">Seguimiento de compra</a>
+                      <Link to="/track-order" className="nav-link">Seguimiento de compra</Link>
                     </li>
                   </ul>
                 </div>
