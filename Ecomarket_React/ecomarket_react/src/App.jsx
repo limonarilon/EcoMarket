@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import Cart from "./components/Cart";
 import RegisterForm from "./components/RegisterForm";
 import { Modal, Button } from "react-bootstrap";
-import "./App.css";
+import "style.css";
 
 // Componentes de páginas
 const Home = ({ products, onAddToCart }) => (
