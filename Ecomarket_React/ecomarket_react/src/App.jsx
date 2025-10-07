@@ -21,6 +21,12 @@ const Ofertas = () => (
   <div className="container my-5">
     <h2>Ofertas Especiales</h2>
     <p>Aquí encontrarás nuestras mejores ofertas y descuentos.</p>
+       <select className="filter-categories border-0 mb-0 me-5">
+        <option>Filtros</option>
+        <option>Dulce</option>
+        <option>Salado</option>
+        <option>Integral</option>
+      </select>
   </div>
 );
 

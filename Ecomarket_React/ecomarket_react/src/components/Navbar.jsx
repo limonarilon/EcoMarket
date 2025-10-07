@@ -48,12 +48,7 @@ const Navbar = ({ cart }) => {
                 </div>
 
                 <div className="offcanvas-body">
-                  <select className="filter-categories border-0 mb-0 me-5">
-                    <option>Filtros</option>
-                    <option>Dulce</option>
-                    <option>Salado</option>
-                    <option>Integral</option>
-                  </select>
+               
 
                   <ul className="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
                     <li className="nav-item active">
