@@ -55,7 +55,7 @@ const Navbar = ({ cart }) => {
                       <Link to="/novedades" className="nav-link">Novedades</Link>
                     </li>
                     <li className="nav-item">
-                      <Link to="/faq" className="nav-link">Preguntas frecuentes</Link>
+                      <Link to="/preguntas-frecuentes" className="nav-link">Preguntas frecuentes</Link>
                     </li>
 
                     <li className="nav-item dropdown">
@@ -69,25 +69,25 @@ const Navbar = ({ cart }) => {
                         Información
                       </a>
                       <ul className="dropdown-menu" aria-labelledby="pages">
-                        <li><Link to="/about" className="dropdown-item">Sobre EcoMarket</Link></li>
-                        <li><Link to="/contact" className="dropdown-item">Contacto</Link></li>
-                        <li><Link to="/location" className="dropdown-item">Ubicación</Link></li>
+                        <li><Link to="/sobre-nosotros" className="dropdown-item">Sobre EcoMarket</Link></li>
+                        <li><Link to="/contacto" className="dropdown-item">Contacto</Link></li>
+                        <li><Link to="/ubicacion" className="dropdown-item">Ubicación</Link></li>
                         <li>
-                          <Link to="/cart" className="dropdown-item">
+                          <Link to="/carrito" className="dropdown-item">
                             Carrito {totalItems > 0 && (
                               <span className="badge bg-success ms-2">{totalItems}</span>
                             )}
                           </Link>
                         </li>
-                        <li><Link to="/news" className="dropdown-item">Noticias relevantes</Link></li>
+                        <li><Link to="/noticias" className="dropdown-item">Noticias relevantes</Link></li>
                       </ul>
                     </li>
 
                     <li className="nav-item">
-                      <Link to="/register" className="nav-link">Regístrate</Link>
+                      <Link to="/registrarse" className="nav-link">Regístrate</Link>
                     </li>
                     <li className="nav-item">
-                      <Link to="/track-order" className="nav-link">Seguimiento de compra</Link>
+                      <Link to="/seguimiento-compra" className="nav-link">Seguimiento de compra</Link>
                     </li>
                   </ul>
                 </div>

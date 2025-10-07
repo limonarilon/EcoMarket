@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -50,12 +51,12 @@ const Footer = () => {
               <div className="footer-menu">
                 <h5 className="widget-title">EcoMarket</h5>
                 <ul className="menu-list list-unstyled">
-                  <li className="menu-item"><a href="#" className="nav-link">Sobre nosotros</a></li>
-                  <li className="menu-item"><a href="#" className="nav-link">Condiciones</a></li>
-                  <li className="menu-item"><a href="#" className="nav-link">Nuestro blog</a></li>
-                  <li className="menu-item"><a href="#" className="nav-link">Empleos</a></li>
-                  <li className="menu-item"><a href="#" className="nav-link">Programa de afiliados</a></li>
-                  <li className="menu-item"><a href="#" className="nav-link">Prensa</a></li>
+                  <li className="menu-item"><Link to="/sobre-nosotros" className="nav-link">Sobre nosotros</Link></li>
+                  <li className="menu-item"><Link to="/terminos-condiciones" className="nav-link">Condiciones</Link></li>
+                  <li className="menu-item"><Link to="/blog" className="nav-link">Nuestro blog</Link></li>
+                  <li className="menu-item"><Link to="/empleos" className="nav-link">Empleos</Link></li>
+                  <li className="menu-item"><Link to="/programa-afiliados" className="nav-link">Programa de afiliados</Link></li>
+                  <li className="menu-item"><Link to="/noticias" className="nav-link">Prensa</Link></li>
                 </ul>
               </div>
             </div>
@@ -65,12 +66,12 @@ const Footer = () => {
               <div className="footer-menu">
                 <h5 className="widget-title">Atención al cliente</h5>
                 <ul className="menu-list list-unstyled">
-                  <li className="menu-item"><a href="#" className="nav-link">Preguntas frecuentes</a></li>
-                  <li className="menu-item"><a href="#" className="nav-link">Contacto</a></li>
-                  <li className="menu-item"><a href="#" className="nav-link">Política de privacidad</a></li>
-                  <li className="menu-item"><a href="#" className="nav-link">Devoluciones y reembolsos</a></li>
-                  <li className="menu-item"><a href="#" className="nav-link">Política de cookies</a></li>
-                  <li className="menu-item"><a href="#" className="nav-link">Información de envíos</a></li>
+                  <li className="menu-item"><Link to="/preguntas-frecuentes" className="nav-link">Preguntas frecuentes</Link></li>
+                  <li className="menu-item"><Link to="/contacto" className="nav-link">Contacto</Link></li>
+                  <li className="menu-item"><Link to="/politica-privacidad" className="nav-link">Política de privacidad</Link></li>
+                  <li className="menu-item"><Link to="/devoluciones-reembolsos" className="nav-link">Devoluciones y reembolsos</Link></li>
+                  <li className="menu-item"><Link to="/politica-cookies" className="nav-link">Política de cookies</Link></li>
+                  <li className="menu-item"><Link to="/informacion-envios" className="nav-link">Información de envíos</Link></li>
                 </ul>
               </div>
             </div>
