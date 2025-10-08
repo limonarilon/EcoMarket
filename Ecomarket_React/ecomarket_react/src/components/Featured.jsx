@@ -16,13 +16,15 @@ const Featured = ({ products, onAddToCart }) => {
 
         <div className="row">
           {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              img={product.img}
-              title={product.title}
-              price={product.price}
-              onAddToCart={() => onAddToCart(product)}
-            />
+          <ProductCard
+            key={product.id}
+            productId={product.id}
+            img={product.img}
+            title={product.title}
+            price={product.price}
+            product={product}
+            onAddToCart={() => onAddToCart(product)}
+          />
           ))}
         </div>
       </div>

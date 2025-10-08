@@ -62,9 +62,7 @@ const Navbar = ({ cart }) => {
                     <li className="nav-item">
                       <Link to="/novedades" className="nav-link">Novedades</Link>
                     </li>
-                    <li className="nav-item">
-                      <Link to="/preguntas-frecuentes" className="nav-link">Preguntas frecuentes</Link>
-                    </li>
+                    
 
                     <li className="nav-item dropdown">
                       <a
@@ -80,22 +78,18 @@ const Navbar = ({ cart }) => {
                         <li><Link to="/sobre-nosotros" className="dropdown-item">Sobre EcoMarket</Link></li>
                         <li><Link to="/contacto" className="dropdown-item">Contacto</Link></li>
                         <li><Link to="/ubicacion" className="dropdown-item">Ubicación</Link></li>
-                        <li>
-                          <Link to="/carrito" className="dropdown-item">
-                            Carrito {totalItems > 0 && (
-                              <span className="badge bg-primary ms-2">{totalItems}</span>
-                            )}
-                          </Link>
-                        </li>
+                        
                         <li><Link to="/noticias" className="dropdown-item">Noticias relevantes</Link></li>
                       </ul>
                     </li>
-
+                    <li className="nav-item">
+                      <Link to="/preguntas-frecuentes" className="nav-link">Preguntas frecuentes</Link>
+                    </li>
                     <li className="nav-item">
                       <Link to="/registrarse" className="nav-link">Regístrate</Link>
                     </li>
                     <li className="nav-item">
-                      <Link to="/seguimiento-compra" className="nav-link">Seguimiento de compra</Link>
+                      <Link to="/iniciar-sesion" className="nav-link">Inicia Sesión</Link>
                     </li>
                   </ul>
                 </div>

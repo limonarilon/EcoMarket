@@ -6,9 +6,10 @@ import BlogPost from "./components/BlogPost";
 import Footer from "./components/Footer";
 import Cart from "./components/Cart";
 import RegisterForm from "./components/RegisterForm";
+import InicioSesion from "./components/InicioSesion";
 import { Modal, Button } from "react-bootstrap";
 import "./styles/style.css";
-
+import ProductDetail from "./components/ProductDetail";
 // Componentes de páginas
 const Home = ({ products, onAddToCart }) => (
   <div>
@@ -232,6 +233,8 @@ function App() {
         <Route path="/noticias" element={<News />} />
         <Route path="/registrarse" element={<RegisterForm />} />
         <Route path="/seguimiento-compra" element={<TrackOrder />} />
+        <Route path="/iniciar-sesion" element={<InicioSesion />} />
+        <Route path="/product/:id" element={<ProductDetail products={products} />} />
         <Route path="/carrito" element={
           <Cart
             cart={cart}
