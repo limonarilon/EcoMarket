@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo--ecomarket.png";
 
+import "./Navbar.css";
+
 const Navbar = ({ cart }) => {
   // Calcular total de items en el carrito
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
