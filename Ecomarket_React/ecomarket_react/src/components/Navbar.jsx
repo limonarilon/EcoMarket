@@ -78,8 +78,6 @@ const Navbar = ({ cart }) => {
                         <li><Link to="/sobre-nosotros" className="dropdown-item">Sobre EcoMarket</Link></li>
                         <li><Link to="/contacto" className="dropdown-item">Contacto</Link></li>
                         <li><Link to="/ubicacion" className="dropdown-item">Ubicación</Link></li>
-                        
-                        <li><Link to="/noticias" className="dropdown-item">Noticias relevantes</Link></li>
                       </ul>
                     </li>
                     <li className="nav-item">

@@ -679,6 +679,24 @@ content: '¡Descubrir!';
     padding: 14px;
     border-radius: 8px;
   }
+
+  /*  filtro de categorías en Ofertas Especiales */
+  div.container select.filter-categories.border-0,
+  .container select.filter-categories,
+  select.filter-categories.border-0 {
+    background-color: #28a745 !important; 
+    color: white !important;
+    border: 1px solid #28a745 !important;
+    padding: 10px 15px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+  }
+
+
   /* dropdown-menu */
   .dropdown-menu {
     padding: 0;

@@ -79,11 +79,6 @@ const Footer = () => {
                       Programa de afiliados
                     </Link>
                   </li>
-                  <li className="menu-item mb-2">
-                    <Link to="/noticias" className="nav-link text-muted p-0 footer-link">
-                      Prensa
-                    </Link>
-                  </li>
                 </ul>
               </div>
             </div>
