@@ -11,6 +11,12 @@ import ProductCard from "./components/ProductCard";
 import { Modal, Button, Accordion } from "react-bootstrap";
 import "./styles/style.css";
 import ProductDetail from "./components/ProductDetail";
+import PrivateRoute from "./routes/PrivateRoute";
+import Dashboard from "./backoffice/Dashboard";
+import Products from "./backoffice/Products";
+import Accounts from "./backoffice/Accounts";
+import BackofficeLayout from "./backoffice/BackofficeLayout";
+
 // Componentes de páginas
 const Home = ({ products, onAddToCart }) => (
   <div>
@@ -966,6 +972,7 @@ function App() {
       <Navbar cart={cart} />
       
       <Routes>
+        {/* Rutas públicas existentes */}
         <Route path="/" element={<Home products={products} onAddToCart={handleAddToCart} />} />
         <Route path="/ofertas" element={<Ofertas products={offerProducts} onAddToCart={handleAddToCart} />} />
         <Route path="/novedades" element={<Novedades products={products} onAddToCart={handleAddToCart} />} />
@@ -993,6 +1000,21 @@ function App() {
         <Route path="/devoluciones-reembolsos" element={<ReturnsRefunds />} />
         <Route path="/politica-cookies" element={<CookiesPolicy />} />
         <Route path="/informacion-envios" element={<ShippingInfo />} />
+
+        {/*  Rutas privadas (solo admin) */}
+        <Route
+          path="/backoffice/*"
+          element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <BackofficeLayout />
+            </PrivateRoute>
+          }
+        >
+          <Route index element={<Dashboard />} />
+          <Route path="products" element={<Products />} />
+          <Route path="accounts" element={<Accounts />} />
+        </Route>
+
       </Routes>
       
       <Footer />

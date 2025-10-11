@@ -1,0 +1,67 @@
+/* Estilos personalizados para el Dashboard */
+
+/* Colores personalizados para las métricas */
+.dashboard-card-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.dashboard-card-success {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.dashboard-card-info {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+
+.dashboard-card-warning {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+}
+
+/* Personalizar el título principal */
+.dashboard-title {
+  color: #2d3748;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+/* Personalizar las cards de métricas */
+.metric-card {
+  border-radius: 15px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Personalizar tabla de pedidos */
+.orders-table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.orders-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+/* Personalizar badges de estado */
+.status-badge-pending {
+  background: #fbbf24;
+  color: #92400e;
+}
+
+.status-badge-completed {
+  background: #34d399;
+  color: #065f46;
+}
+
+.status-badge-processing {
+  background: #60a5fa;
+  color: #1e40af;
+}

@@ -22,20 +22,32 @@ const InicioSesion = () => {
             setError('Correo electrónico inválido.');
             return;
         }
-
+        // Simulación de roles
+        if (email === 'admin@ecomarket.cl' && password === 'claveadmin123') {
+            // Guardamos rol en localStorage
+            localStorage.setItem('userRole', 'admin');
+            setShowSuccessModal(true);
+            return;
+        }
         if (password !== 'Claveprueba123') {
             setError('Contraseña incorrecta.');
             return;
         }
-
+        // Usuario normal
+        localStorage.setItem('userRole', 'user');
         // Mostrar modal de éxito
         setShowSuccessModal(true);
     };
 
     const handleCloseModal = () => {
-        setShowSuccessModal(false);
-        // Redireccionar a la página principal después de cerrar el modal
+    setShowSuccessModal(false);
+    const role = localStorage.getItem('userRole');
+    // Redirección según tipo de usuario
+    if (role === 'admin') {
+        navigate('/backoffice');
+    } else {
         navigate('/');
+    }
     };
 
     // Redirección automática después de 3 segundos
