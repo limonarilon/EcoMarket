@@ -1,15 +1,29 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import logo from "../assets/images/logo--ecomarket.png";
+
+import "./Navbar.css";
 
 const Navbar = ({ cart }) => {
   // Calcular total de items en el carrito
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <header className="header">
+    <header className="header" style={{minHeight: 'var(--header-height-min)'}}>
       <div className="container-fluid">
         <div className="row py-3">
-          <div className="d-flex justify-content-center justify-content-sm-between align-items-center">
-            <nav className="main-menu d-flex navbar navbar-expand-lg">
+          <div className="col-12">
+            <div className="d-flex justify-content-between align-items-center">
+              {/* Logo */}
+              <div className="navbar-brand">
+                <img 
+                  src={logo} 
+                  alt="EcoMarket" 
+                  style={{height: '50px'}}
+                />
+              </div>
+              
+              <nav className="main-menu d-flex navbar navbar-expand-lg">
               <button
                 className="navbar-toggler"
                 type="button"
@@ -36,26 +50,19 @@ const Navbar = ({ cart }) => {
                 </div>
 
                 <div className="offcanvas-body">
-                  <select className="filter-categories border-0 mb-0 me-5">
-                    <option>Filtros</option>
-                    <option>Dulce</option>
-                    <option>Salado</option>
-                    <option>Integral</option>
-                  </select>
+               
 
                   <ul className="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
                     <li className="nav-item active">
-                      <a href="#women" className="nav-link">Inicio</a>
-                    </li>
-                    <li className="nav-item dropdown">
-                      <a href="#men" className="nav-link">Ofertas</a>
+                      <Link to="/" className="nav-link">Inicio</Link>
                     </li>
                     <li className="nav-item">
-                      <a href="#kids" className="nav-link">Novedades</a>
+                      <Link to="/ofertas" className="nav-link">Ofertas</Link>
                     </li>
                     <li className="nav-item">
-                      <a href="#accessories" className="nav-link">Preguntas frecuentes</a>
+                      <Link to="/novedades" className="nav-link">Novedades</Link>
                     </li>
+                    
 
                     <li className="nav-item dropdown">
                       <a
@@ -68,31 +75,38 @@ const Navbar = ({ cart }) => {
                         Información
                       </a>
                       <ul className="dropdown-menu" aria-labelledby="pages">
-                        <li><a href="index.html" className="dropdown-item">Sobre EcoMarket</a></li>
-                        <li><a href="index.html" className="dropdown-item">Contacto</a></li>
-                        <li><a href="index.html" className="dropdown-item">Ubicación</a></li>
-                        <li>
-                          <a href="#cart" className="dropdown-item">
-                            Carrito {totalItems > 0 && (
-                              <span className="badge bg-success ms-2">{totalItems}</span>
-                            )}
-                          </a>
-                        </li>
-                        <li><a href="index.html" className="dropdown-item">Noticias relevantes</a></li>
+                        <li><Link to="/sobre-nosotros" className="dropdown-item">Sobre EcoMarket</Link></li>
+                        <li><Link to="/contacto" className="dropdown-item">Contacto</Link></li>
+                        <li><Link to="/ubicacion" className="dropdown-item">Ubicación</Link></li>
                       </ul>
                     </li>
-
                     <li className="nav-item">
-                      <a href="#brand" className="nav-link">Regístrate</a>
+                      <Link to="/preguntas-frecuentes" className="nav-link">Preguntas frecuentes</Link>
                     </li>
                     <li className="nav-item">
-                      <a href="#sale" className="nav-link">Seguimiento de compra</a>
+                      <Link to="/registrarse" className="nav-link">Regístrate</Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/iniciar-sesion" className="nav-link">Inicia Sesión</Link>
                     </li>
                   </ul>
                 </div>
               </div>
 
             </nav>
+            
+            {/* Carrito visible siempre */}
+            <div className="cart-icon d-flex align-items-center ms-3">
+              <Link to="/carrito" className="btn btn-outline-light position-relative">
+                🛒
+                {totalItems > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+            </div>
+            </div>
           </div>
         </div>
       </div>
