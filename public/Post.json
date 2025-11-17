@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "Recetas saludables con brócoli y antioxidantes",
+    "author": "Juan Pérez",
+    "date": "2025-10-14",
+    "content": "El brócoli es rico en antioxidantes que ayudan a proteger tu cuerpo y fortalecer el sistema inmunológico. Prueba recetas sencillas como salteados, cremas o ensaladas con brócoli para aprovechar todos sus beneficios y disfrutar de una alimentación saludable y deliciosa.",
+    "image": "/assets/images/brocoli.png"
+  },
+  {
+    "id": 2,
+    "title": "Los beneficios de los productos de cajú",
+    "author": "Ana Gómez",
+    "date": "2025-10-15",
+    "content": "Las nueces de cajú son una excelente fuente de vitaminas, minerales y aceites saludables. Ayudan a fortalecer el sistema inmunológico, aportan energía y contribuyen al bienestar general gracias a sus grasas buenas y antioxidantes. ¡Inclúyelas en tu dieta para una vida más sana!",
+    "image": "/assets/images/post-thumb-2.jpg"
+  },
+  {
+    "id": 3,
+    "title": "Top 10 ideas para un verano divertido",
+    "author": "Ana Gómez",
+    "date": "2025-10-16",
+    "content": "Descubre las mejores ideas para un verano divertido: cocina en familia recetas frescas y saludables, utiliza productos sanos y locales, organiza picnics, cultiva tu propio huerto, haz juegos al aire libre, comparte cenas temáticas, prueba frutas de temporada, crea postres caseros, haz excursiones ecológicas y promueve hábitos saludables en casa. ¡Vive un verano lleno de sabor y bienestar!",
+    "image": "/assets/images/verano2.jpg"
+  }
+]

@@ -1,0 +1,6 @@
+.register-bg {
+  background-image: url('../assets/register-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}

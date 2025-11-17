@@ -1,0 +1,55 @@
+.featured-container {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.featured-product {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(56, 142, 60, 0.08);
+  padding: 1rem;
+  width: 220px;
+  text-align: center;
+  transition: box-shadow 0.2s;
+}
+
+.featured-product:hover {
+  box-shadow: 0 4px 16px rgba(56, 142, 60, 0.18);
+}
+
+.featured-product img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.featured-product h5 {
+  color: #388e3c;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.featured-product p {
+  color: #1b5e20;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.featured-product-section .btn {
+  background-color: #388e3c !important; /* Verde EcoMarket */
+  color: #fff !important;
+  border: none;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.featured-product-section .btn:hover {
+  background-color: #1b5e20 !important; /* Verde más oscuro al pasar el mouse */
+  color: #fff !important;
+}
