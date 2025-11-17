@@ -1,6 +1,5 @@
 import React from "react";
-import formattedImages from './Images';
-import images from "../assets/images";
+import formattedImages, { getImageSrc } from './Images';
 import ProductCard from "./ProductCard";
 
 import "../assets/css/Featured.css";
@@ -60,14 +59,14 @@ const Featured = ({ products, onAddToCart }) => {
               };
               return (
                 <ProductCard
-                  key={safeProduct.id}
-                  productId={safeProduct.id}
-                  img={images[safeProduct.img]}
-                  title={safeProduct.title}
-                  price={safeProduct.price}
-                  product={safeProduct}
-                  onAddToCart={() => onAddToCart(safeProduct)}
-                />
+                      key={safeProduct.id}
+                      productId={safeProduct.id}
+                      img={safeProduct.img}
+                      title={safeProduct.title}
+                      price={safeProduct.price}
+                      product={safeProduct}
+                      onAddToCart={() => onAddToCart(safeProduct)}
+                    />
               );
             })}
           </div>

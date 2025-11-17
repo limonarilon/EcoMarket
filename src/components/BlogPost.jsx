@@ -1,5 +1,5 @@
 import React from "react";
-import formattedImages from './Images';
+import formattedImages, { getImageSrc } from './Images';
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 const BlogPost = () => {
 
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
 
  useEffect(() => {
@@ -46,7 +48,7 @@ const BlogPost = () => {
               <div key={post.id} className="col-md-4 d-flex align-items-stretch mb-4">
                 <div className="blog-card w-100 d-flex flex-column align-items-center">
                   <img
-                    src={post.image}
+                    src={getImageSrc(post.image)}
                     alt={post.title ? post.title : `Blog ${index + 1}`}
                     className="img-fluid"
                     style={{ height: "220px", objectFit: "cover", width: "100%", borderRadius: "12px" }}

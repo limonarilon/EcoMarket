@@ -1,5 +1,5 @@
 import React from "react";
-import images from "../assets/images";
+import { getImageSrc } from './Images';
 import { Link, useNavigate } from "react-router-dom";
 
 const Cart = ({ cart, onRemove, onUpdateQuantity }) => {
@@ -42,7 +42,7 @@ const Cart = ({ cart, onRemove, onUpdateQuantity }) => {
                   <tr key={item.id}>
                     <td className="d-flex align-items-center">
                       <img
-                        src={images[item.img]}
+                        src={getImageSrc(item.img)}
                         alt={item.title}
                         style={{
                           width: "60px",

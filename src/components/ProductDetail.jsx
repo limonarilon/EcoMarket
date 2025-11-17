@@ -1,5 +1,5 @@
 import React from "react";
-import images from "../assets/images";
+import { getImageSrc } from './Images';
 import { useParams } from 'react-router-dom';
 
 // Productos genéricos por categoría
@@ -60,7 +60,7 @@ const ProductDetail = ({ products = [] }) => {
     <div className="container my-5">
       <div className="row g-4">
         <div className="col-md-5">
-          <img src={images[product.img] || product.img}
+          <img src={getImageSrc(product.img || product.image || product.img)}
             alt={product.nombre || product.title}
             className="img-fluid rounded"
             style={{ height: "300px", width: "100%", objectFit: "cover" }} />

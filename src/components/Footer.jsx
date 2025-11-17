@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo--ecomarket.png";
-import images from "../assets/images";
+import { getImageSrc } from "../components/Images";
 
 import "../assets/css/Footer.css";
 
@@ -25,17 +25,17 @@ const Footer = () => {
                   <ul className="d-flex list-unstyled gap-3">
                     <li>
                       <a href="#" title="Facebook">
-                        <img src={images["facebook"]} alt="Facebook" style={{width: '32px', height: '32px'}} />
+                        <img src={getImageSrc("facebook")} alt="Facebook" style={{width: '32px', height: '32px'}} />
                       </a>
                     </li>
                     <li>
                       <a href="#" title="X">
-                        <img src={images["x"]} alt="X" style={{width: '32px', height: '32px'}} />
+                        <img src={getImageSrc("x")} alt="X" style={{width: '32px', height: '32px'}} />
                       </a>
                     </li>
                     <li>
                       <a href="#" title="Instagram">
-                        <img src={images["instagram"]} alt="Instagram" style={{width: '32px', height: '32px'}} />
+                        <img src={getImageSrc("instagram")} alt="Instagram" style={{width: '32px', height: '32px'}} />
                       </a>
                     </li>
                   </ul>

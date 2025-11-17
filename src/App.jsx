@@ -1,193 +1,78 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Featured from "./components/Featured";
 import BlogPost from "./components/BlogPost";
-import Blog from "./components/Blog";
-import Footer from "./components/Footer";
+import ProductDetail from "./components/ProductDetail";
 import Cart from "./components/Cart";
+import Categoria from "./components/Categoria";
 import RegisterForm from "./components/RegisterForm";
 import InicioSesion from "./components/InicioSesion";
-import ProductCard from "./components/ProductCard";
-import { Modal, Button, Accordion } from "react-bootstrap";
-import "./styles/style.css";
-import ProductDetail from "./components/ProductDetail";
-import PrivateRoute from "./routes/PrivateRoute";
-import Dashboard from "./backoffice/Dashboard";
 import Products from "./backoffice/Products";
 import Accounts from "./backoffice/Accounts";
-import BackofficeLayout from "./backoffice/BackofficeLayout";
 import Boletas from "./backoffice/Boletas";
-import Categoria from "./components/Categoria";
-import images from "./assets/images";
-import { Carousel } from "react-bootstrap";
-import BotonPago from "./components/Pago"; 
-// Componentes de páginas
-const Home = ({ products, onAddToCart }) => (
-  <div>
-    <Featured products={products} onAddToCart={onAddToCart} />
-    <Carousel className="my-5">
-      <Carousel.Item>
-        <div className="d-flex align-items-center" style={{ height: "300px", background: "#fff" }}>
-          <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-            <img
-              src={images["chcolatee"]}
-              alt={products[0].title}
-              style={{ height: "320px", width: "320px", objectFit: "cover", borderRadius: "16px", boxShadow: "0 2px 16px rgba(0,0,0,0.10)" }}
-            />
-          </div>
-          <div style={{ flex: 2, paddingLeft: "30px" }}>
-            <h3 className="text-success mb-2">{products[0].title}</h3>
-            <p className="fs-5">¡Descubre este producto destacado en Novedades!</p>
-            <p className="fw-bold">{products[0].price} (200g)</p>
-            <a href={`/product/${products[0].id}`} className="btn btn-primary mt-3">
-              Ver detalle
-            </a>
-          </div>
-        </div>
-      </Carousel.Item>
-      <Carousel.Item>
-        <div
-          className="d-flex align-items-center justify-content-center"
-          style={{
-            height: "340px",
-            borderRadius: "10px",
-            padding: "0 40px",
-            backgroundImage: `url(${images["blog-banner"]})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat"
-          }}
-        >
-          <div
-            className="mx-auto d-flex flex-row align-items-center"
-            style={{
-              background: "rgba(255,255,255,0.85)",
-              borderRadius: "14px",
-              padding: "32px 48px",
-              maxWidth: "900px",
-              minHeight: "220px",
-              boxShadow: "0 2px 16px rgba(0,0,0,0.10)"
-            }}
-          >
-            <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
-              <img
-                src={images["foto-banner-carrusel-blog"]}
-                alt="Blog EcoMarket"
-                style={{ width: "200px", height: "200px", objectFit: "cover", borderRadius: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.12)" }}
-              />
-            </div>
-            <div style={{ flex: 2, paddingLeft: "36px" }}>
-              <h3 className="text-success mb-3">Blog EcoMarket</h3>
-              <ul className="list-unstyled mb-3">
-                <li>✅ Recetas saludables</li>
-                <li>✅ Consejos de nutrición</li>
-                <li>✅ Estilo de vida sostenible</li>
-              </ul>
-              <a href="/blog" className="btn btn-success px-4 py-2 fw-bold mt-2">Nuestro Blog</a>
-            </div>
-          </div>
-        </div>
-      </Carousel.Item>
-      <Carousel.Item>
-        <div
-          className="d-flex align-items-center justify-content-center position-relative"
-          style={{
-            height: "340px",
-            borderRadius: "10px",
-            padding: "0 40px",
-            backgroundImage: `url(${images["programa-afiliados"]})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat"
-          }}
-        >
-          <div
-            className="position-relative"
-            style={{
-              background: "rgba(255,255,255,0.85)",
-              borderRadius: "14px",
-              padding: "32px 36px",
-              maxWidth: "480px",
-              boxShadow: "0 2px 16px rgba(0,0,0,0.10)"
-            }}
-          >
-            <h3 className="text-success mb-3">Programa de Afiliados</h3>
-            <p className="fs-5 mb-2">Gana puntos y descuentos con cada compra y recomendación.</p>
-            <ul className="list-unstyled mb-3">
-              <li>✅ 10 puntos por cada $1.000 gastado</li>
-              <li>✅ Descuentos exclusivos y productos gratis</li>
-              <li>✅ Refiera amigos y gane más</li>
-            </ul>
-            <a href="/programa-afiliados" className="btn btn-success px-4 py-2 fw-bold mt-2">
-              Más información
-            </a>
-          </div>
-        </div>
-      </Carousel.Item>
-    </Carousel>
-  <BlogPost />
-  
-  </div>
-);
+import Dashboard from "./backoffice/Dashboard";
+import BackofficeLayout from "./backoffice/BackofficeLayout";
+import PrivateRoute from "./routes/PrivateRoute";
+import Blog from "./components/Blog";
+import { getProducts } from "./services/api";
+import formattedImages, { getImageSrc } from "./components/Images";
+import Carrusel from "./components/carrusel";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
-const Ofertas = ({ products, onAddToCart }) => {
-  // Estado para el filtro
-  const [selectedFilter, setSelectedFilter] = useState("Filtros");
-
-  // Filtrar productos según la categoría seleccionada 
-  let filteredProducts;
-  if (selectedFilter === "Filtros") {
-    filteredProducts = products; // Mostrar todos los productos
-  } else {
-    filteredProducts = products.filter(product => product.category === selectedFilter); // Filtrar por categoría
+// Simple page components used in routes (kept minimal to avoid duplication)
+const Home = ({ products, onAddToCart }) => {
+  if (!products) {
+    return (
+      <div className="container my-5 text-center">
+        <h3>Cargando productos...</h3>
+      </div>
+    );
   }
 
-  // Manejar cambio de filtro
-  const handleFilterChange = (e) => {
-    setSelectedFilter(e.target.value);
-  };
+  // Seleccionamos unos pocos productos como destacados (primeras 4 entradas)
+  const featuredProducts = (products && products.length > 0) ? products.slice(0, 4) : [];
 
   return (
-    <div style={{
-        backgroundImage: `url(${formattedImages['.assets/images/background-pattern']})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        width: '100%',
-      }} className="container my-5">
-      <h2 className="section-title-llamativo">Ofertas Especiales</h2>
-      <p className="section-subtitle-llamativo">Aquí encontrarás nuestras mejores ofertas y descuentos.</p>
-      <select
-        className="form-select bg-success text-white border-success rounded px-3 py-2 fw-medium me-5 w-auto"
-        value={selectedFilter}
-        onChange={handleFilterChange}
-      >
-        <option value="Integral">Integral</option>
-        <option value="Dulce">Dulce</option>
-        <option value="Salado">Salado</option>
-      </select>
+    <div>
+      {/* Carrusel del equipo */}
+      
+      <Featured products={featuredProducts} onAddToCart={onAddToCart} />
+      <Carrusel products={featuredProducts} />
+      <BlogPost />
+    </div>
+  );
+};
 
-      {/* Mostrar productos filtrados */}
-      <div className="row mt-4">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              productId={product.id}
-              img={images[product.img]}
-              title={product.title}
-              price={product.price}
-              originalPrice={product.originalPrice}
-              discount={product.discount}
-              product={product}
-              onAddToCart={() => onAddToCart(product)}
-            />
-          ))
-        ) : (
-          <div className="col-12 text-center">
-            <p className="text-muted">No hay productos disponibles para esta categoría.</p>
+const Ofertas = ({ products, onAddToCart }) => {
+  const [selectedFilter, setSelectedFilter] = useState("Filtros");
+  const filtered = selectedFilter === "Filtros" ? products : (products || []).filter(p => p.category === selectedFilter);
+  return (
+    <div className="container my-5">
+      <h2 className="section-title-llamativo">Ofertas Especiales</h2>
+      <div className="mb-3">
+        <select className="form-select w-auto" value={selectedFilter} onChange={e => setSelectedFilter(e.target.value)}>
+          <option value="Filtros">Filtros</option>
+          <option value="Integral">Integral</option>
+          <option value="Dulce">Dulce</option>
+          <option value="Salado">Salado</option>
+        </select>
+      </div>
+      <div className="row">
+        {(filtered || []).map(p => (
+          <div key={p.id} className="col-md-6 mb-4">
+            <div className="card h-100">
+              <img src={getImageSrc(p.img)} className="card-img-top" alt={p.title} />
+              <div className="card-body">
+                <h5 className="card-title">{p.title}</h5>
+                <p className="card-text">{p.price}</p>
+                <button className="btn btn-primary" onClick={() => onAddToCart(p)}>Agregar al carrito</button>
+              </div>
+            </div>
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
@@ -195,245 +80,93 @@ const Ofertas = ({ products, onAddToCart }) => {
 
 const Novedades = ({ products, onAddToCart }) => {
   const navigate = useNavigate();
-  // Seleccionar los productos destacados y de oferta como novedades
   const novedadesProducts = [
     { id: 101, img: "chcolatee", title: "Chocolate Orgánico 90% cacao", price: "$3.590" },
     { id: 102, img: "fruos-secos", title: "Mix Frutos Secos", price: "$4.670" },
     { id: 203, img: "pasta", title: "Pasta Integral Vegana (400g)", price: "$11.990" },
     { id: 205, img: "aceite y coco", title: "Aceite de Coco", price: "$15.000" },
   ];
-
   return (
     <div className="container my-5">
       <h2 className="section-title-llamativo">Novedades</h2>
-      <p className="section-subtitle-llamativo">Descubre los productos más nuevos en EcoMarket.</p>
-      <div className="mt-4">
-        <div className="row">
-          {novedadesProducts.map((product, index) => (
-            <div key={product.id} className="col-md-6 mb-4 d-flex">
-              <div className="product-card w-100 d-flex align-items-center">
-                <div className="me-4 d-flex flex-column align-items-center justify-content-center" style={{ minWidth: "220px" }}>
-                  <img 
-                    src={images[product.img]} 
-                    alt={product.title} 
-                    className="img-fluid"
-                    style={{ width: "220px", height: "220px", objectFit: "cover", borderRadius: "14px", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}
-                    onClick={() => navigate(`/product/${product.id}`)}
-                  />
-                  <h5 className="product-title mt-2" style={{ cursor: 'pointer' }}>
-                    {product.title}
-                  </h5>
-                  <p className="product-price">{product.price}</p>
-                  <button 
-                    className="btn btn-primary mt-2" 
-                    onClick={() => onAddToCart(product)}
-                  >
-                    Agregar al carrito
-                  </button>
-                </div>
-                <div className="product-description p-3 bg-light rounded w-100">
-                  <h4 className="text-success mb-2">¡Novedad!</h4>
-                  <p className="text-muted mb-1">
-                    {product.title} es uno de los productos más nuevos y destacados de nuestra tienda.
-                  </p>
-                </div>
+      <div className="row">
+        {novedadesProducts.map(product => (
+          <div key={product.id} className="col-md-6 mb-4 d-flex">
+            <div className="card w-100">
+              <img src={getImageSrc(product.img)} className="card-img-top" alt={product.title} />
+              <div className="card-body">
+                <h5 className="card-title">{product.title}</h5>
+                <p className="card-text">{product.price}</p>
+                <button className="btn btn-primary" onClick={() => onAddToCart(product)}>Agregar al carrito</button>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-const FAQ = () => {
-  console.log("FAQ component is rendering"); // Para debug
-  
-  return (
-    <div className="container my-5">
-      <h2 className="section-title-llamativo">Preguntas Frecuentes</h2>
-      
-      
-      {/* Accordion simplificado para prueba */}
-      <div className="accordion" id="accordionExample">
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingOne">
-            <button 
-              className="accordion-button" 
-              type="button" 
-              data-bs-toggle="collapse" 
-              data-bs-target="#collapseOne" 
-              aria-expanded="true" 
-              aria-controls="collapseOne"
-            >
-              ¿Cómo puedo realizar un pedido?
-            </button>
-          </h2>
-          <div 
-            id="collapseOne" 
-            className="accordion-collapse collapse show" 
-            aria-labelledby="headingOne" 
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body">
-              Puedes realizar tu pedido navegando por nuestros productos y agregándolos al carrito.
-            </div>
-          </div>
-        </div>
-        
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingTwo">
-            <button 
-              className="accordion-button collapsed" 
-              type="button" 
-              data-bs-toggle="collapse" 
-              data-bs-target="#collapseTwo" 
-              aria-expanded="false" 
-              aria-controls="collapseTwo"
-            >
-              ¿Qué métodos de pago aceptan?
-            </button>
-          </h2>
-          <div 
-            id="collapseTwo" 
-            className="accordion-collapse collapse" 
-            aria-labelledby="headingTwo" 
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body">
-              Aceptamos pagos con tarjetas de crédito, débito y transferencias bancarias.
-            </div>
-          </div>
-        </div>
-        
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingThree">
-            <button 
-              className="accordion-button collapsed" 
-              type="button" 
-              data-bs-toggle="collapse" 
-              data-bs-target="#collapseThree" 
-              aria-expanded="false" 
-              aria-controls="collapseThree"
-            >
-              ¿Realizan despachos en días hábiles?
-            </button>
-          </h2>
-          <div 
-            id="collapseThree" 
-            className="accordion-collapse collapse" 
-            aria-labelledby="headingThree" 
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body">
-              Sí, los despachos se realizan únicamente en días hábiles. Los pedidos realizados durante fines de semana o feriados serán procesados el siguiente día hábil.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-import formattedImages from './components/Images';
+const FAQ = () => (
+  <div className="container my-5">
+    <h2 className="section-title-llamativo">Preguntas Frecuentes</h2>
+    <p>Preguntas y respuestas básicas.</p>
+  </div>
+);
 
 const About = () => (
   <div className="container my-5">
     <h2>Sobre EcoMarket</h2>
-    <p>
-      En EcoMarket nos dedicamos a ofrecer productos orgánicos de la más alta calidad, seleccionados cuidadosamente para promover un estilo de vida saludable y sostenible. Nuestra misión es facilitar el acceso a alimentos y productos naturales, garantizando frescura, autenticidad y responsabilidad ambiental en cada compra. Creemos en el poder de la alimentación consciente y trabajamos para que cada cliente disfrute de una experiencia confiable y satisfactoria al adquirir nuestros productos en línea.
-    </p>
-    <div className="text-center mt-4">
-      <img src={formattedImages['.assets/images/equipo-trabajo']} alt="EcoMarket equipo" className="img-fluid rounded shadow" style={{ maxWidth: "400px" }} />
-    </div>
+    <p>En EcoMarket nos dedicamos a ofrecer productos orgánicos de la más alta calidad.</p>
   </div>
 );
 
 const Contact = () => (
   <div className="container my-5">
     <h2>Contacto</h2>
-    <p>
-      ¿Tienes dudas, sugerencias o necesitas ayuda con tu compra? Nuestro equipo está disponible para atenderte y brindarte la mejor experiencia en EcoMarket. Puedes contactarnos a través de los siguientes medios:
-    </p>
-    <ul className="list-unstyled mt-4">
-      <li className="mb-3 d-flex align-items-center">
-        <img src={formattedImages['.assets/images/whatsapp']} alt="WhatsApp" style={{ width: "32px", marginRight: "12px" }} />
-        <span className="fw-bold">WhatsApp:</span> <span className="ms-2">+569 1234 5678</span>
-      </li>
-      <li className="mb-3 d-flex align-items-center">
-        <img src={formattedImages['.assets/images/instagram']} alt="Instagram" style={{ width: "32px", marginRight: "12px" }} />
-        <span className="fw-bold">Instagram:</span> <span className="ms-2">@ecomarket_cl</span>
-      </li>
-      <li className="mb-3 d-flex align-items-center">
-        <img src={formattedImages['.assets/images/gmail']} alt="Correo" style={{ width: "32px", marginRight: "12px" }} />
-        <span className="fw-bold">Correo electrónico:</span> <span className="ms-2">contacto@ecomarket.cl</span>
-      </li>
-    </ul>
-    <p>
-      ¡Esperamos tu mensaje y te responderemos lo antes posible!
-    </p>
+    <p>contacto@ecomarket.cl</p>
   </div>
 );
 
 const Location = () => (
   <div className="container my-5">
     <h2>Ubicación</h2>
-    <p>Somos una tienda online con la posibilidad de retiro en nuestras oficinas. A continuación, te mostramos nuestra dirección:</p>
-    <p><strong>Dirección:</strong> Av. Siempre Viva 123, Santiago, Chile</p>
-    <img src={formattedImages['.assets/images/mapa-ubicacion']} alt="Mapa de ubicación" className="img-fluid rounded shadow" />
+    <p>Av. Siempre Viva 123, Santiago, Chile</p>
   </div>
 );
 
+// Helper to format prices (simple, used while migrating)
+const formatPriceCLP = (value) => {
+  if (value === undefined || value === null) return "";
+  try {
+    return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(Number(value));
+  } catch (e) {
+    return `$${value}`;
+  }
+};
+
+// Minimal placeholders for components referenced in routes (can be replaced later)
 const TrackOrder = () => (
   <div className="container my-5">
     <h2>Seguimiento de Compra</h2>
-    <p>Rastrea el estado de tu pedido aquí.</p>
+    <p>Ingrese su número de pedido para ver el estado.</p>
   </div>
 );
 
-// Nuevos componentes para las páginas adicionales del footer
 const Terms = () => (
   <div className="container my-5">
     <h2>Términos y Condiciones</h2>
-    
-    <div className="row">
-      <div className="col-lg-10 mx-auto">
-        <p className="lead">Última actualización: Octubre 2025</p>
-        
-        <h4 className="mt-4 text-success">1. Aceptación de los Términos</h4>
-        <p>Al acceder y utilizar el sitio web de EcoMarket, usted acepta cumplir con estos términos y condiciones. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro servicio.</p>
-        
-        <h4 className="mt-4 text-success">2. Productos y Servicios</h4>
-        <p>EcoMarket se especializa en la venta de productos orgánicos y naturales. Nos esforzamos por proporcionar descripciones precisas de todos nuestros productos, incluyendo ingredientes, origen y certificaciones orgánicas.</p>
-        
-        <h4 className="mt-4 text-success">3. Precios y Pagos</h4>
-        <ul>
-          <li>Todos los precios están expresados en pesos chilenos e incluyen IVA</li>
-          <li>Los precios pueden cambiar sin previo aviso</li>
-          <li>Aceptamos pagos con tarjetas de crédito, débito y transferencias bancarias</li>
-          <li>El pago debe completarse antes del envío del pedido</li>
-        </ul>
-        
-        <h4 className="mt-4 text-success">4. Envíos y Entregas</h4>
-        <p>Los envíos se realizan dentro del territorio nacional. Los tiempos de entrega pueden variar según la ubicación geográfica. EcoMarket no se hace responsable por retrasos causados por terceros o condiciones climáticas adversas.</p>
-        
-        <h4 className="mt-4 text-success">5. Responsabilidades del Usuario</h4>
-        <ul>
-          <li>Proporcionar información veraz y actualizada</li>
-          <li>Mantener la confidencialidad de su cuenta</li>
-          <li>Usar el sitio web de manera responsable y legal</li>
-        </ul>
-        
-        <h4 className="mt-4 text-success">6. Limitación de Responsabilidad</h4>
-        <p>EcoMarket no será responsable por daños indirectos, incidentales o consecuenciales que resulten del uso de nuestros productos o servicios, excepto donde la ley lo prohíba.</p>
-        
-        <div className="alert alert-info mt-4">
-          <strong>Contacto:</strong> Para consultas sobre estos términos, contáctanos en info@ecomarket.cl
-        </div>
-      </div>
-    </div>
+    <p>Políticas generales de uso del sitio.</p>
   </div>
 );
+
+const BotonPago = () => (
+  <div className="container my-5 text-center">
+    <h2>Pago</h2>
+    <p>Integración de pago pendiente.</p>
+  </div>
+);
+
 
 
 
@@ -1051,13 +784,34 @@ function App() {
     }
   };
 
-  // Array de productos de ejemplo 
-  const products = [
-  { id: 101, img: "chcolatee", title: "Chocolate Orgánico 90% cacao", price: "$3.590" },
-  { id: 102, img: "fruos-secos", title: "Mix Frutos Secos", price: "$4.670" },
-  { id: 203, img: "pasta", title: "Pasta Integral Vegana (400g)", price: "$11.990" },
-  { id: 205, img: "aceite y coco", title: "Aceite de Coco", price: "$15.000" },
-  ];
+  // Productos cargados desde el backend
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    let mounted = true;
+    async function loadProducts() {
+      try {
+        const resp = await getProducts();
+        // mapear al formato que usan los componentes (title, price formateado, img key)
+        console.debug('getProducts() raw response mapped items:', resp);
+        const ui = resp.map(p => ({
+          id: p.id,
+          // `mapProducto` ahora intenta extraer hrefs comunes de `_links` si existe.
+          // Aquí usamos directamente `p.img` (puede ser URL absoluta, href a recurso o clave local).
+          img: p.img || null,
+          title: p.name || p.nombre || `Producto ${p.id}`,
+          price: p.price !== undefined ? formatPriceCLP(p.price) : p.price,
+          priceRaw: p.price,
+          category: p.category,
+          expirationDate: p.expirationDate,
+        }));
+        if (mounted) setProducts(ui);
+      } catch (e) {
+        console.error('Error cargando productos desde API', e);
+      }
+    }
+    loadProducts();
+    return () => { mounted = false; };
+  }, []);
 
   // Array de productos en oferta
   const offerProducts = [
@@ -1131,7 +885,7 @@ function App() {
           {modalProduct && (
             <>
               <img 
-                src={images[modalProduct.img]} 
+                src={getImageSrc(modalProduct.img)} 
                 alt={modalProduct.title} 
                 style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px" }} 
               />

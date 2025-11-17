@@ -69,10 +69,15 @@ function extractEmbedded(resp, key) {
 function mapProducto(apiItem) {
 	// Convertimos los campos del backend (español) a los que espera el frontend
 	// (inglés), para no tener que cambiar todos los componentes.
+	const rawImg = apiItem.img ?? apiItem.image ?? null;
+	const isAbsoluteUrl = (s) => typeof s === 'string' && (s.startsWith('http://') || s.startsWith('https://') || s.startsWith('//'));
+	const img = isAbsoluteUrl(rawImg) ? rawImg : (rawImg ? String(rawImg).trim() : null);
+
 	return {
 		id: apiItem.id,
 		name: apiItem.nombre,
 		price: apiItem.precio, // entero en CLP
+		img, // puede ser URL absoluta o una clave local (nombre de archivo) o href a recurso de imagen
 		stock: apiItem.stock,
 		// Si el backend devuelve campos extra (por ejemplo categoria, expirationDate),
 		// los podemos incluir aquí si existen.
@@ -107,6 +112,8 @@ export async function getProducts(params = {}) {
 	const items = extractEmbedded(resp, 'productoModelList');
 	return items.map(mapProducto);
 }
+
+// (debug helper removed) -- keeping API functions minimal
 
 export async function getProduct(id) {
 	const resp = await api.get(`/productos/${id}`);
@@ -187,6 +194,83 @@ export async function updateUser(id, user) {
 export async function deleteUser(id) {
 	const resp = await api.delete(`/usuarios/${id}`);
 	return resp.status === 200 || resp.status === 204;
+}
+
+// --- Pedidos (Orders) ---
+/**
+ * Mapea un objeto Pedido devuelto por el backend a una forma usada por la UI.
+ * - Convierte `idPedido` -> `id`
+ * - Mantiene `fecha`, `estado`, `total` y mapea `productos` usando `mapProducto`
+ */
+function mapOrder(apiItem) {
+	// A veces el assembler puede envolver el modelo; intentamos obtener el objeto real
+	const item = apiItem && apiItem.idPedido !== undefined ? apiItem : (apiItem && apiItem.pedido ? apiItem.pedido : apiItem);
+
+	return {
+		id: item?.idPedido,
+		fecha: item?.fecha,
+		estado: item?.estado,
+		total: item?.total !== undefined ? Number(item.total) : null,
+		productos: (item?.productos ?? []).map(mapProducto),
+		_links: item?._links,
+	};
+}
+
+export async function getOrders(params = {}) {
+	const resp = await api.get('/pedidos', { params });
+	const items = extractEmbedded(resp, 'pedidoModelList');
+	return items.map(mapOrder);
+}
+
+export async function getOrder(id) {
+	const resp = await api.get(`/pedidos/${id}`);
+	return mapOrder(resp.data);
+}
+
+export async function createOrder(order) {
+	// order puede contener: fecha, estado, total, productos (array)
+	const payload = {
+		...(order.fecha ? { fecha: order.fecha } : {}),
+		...(order.estado ? { estado: order.estado } : {}),
+		...(order.total !== undefined ? { total: order.total } : {}),
+		...(order.productos ? { productos: order.productos.map(p => ({
+			id: p.id,
+			nombre: p.name ?? p.nombre,
+			precio: p.price ?? p.precio,
+			stock: p.stock,
+			img: p.img ?? p.image ?? null,
+			expirationDate: p.expirationDate ?? p.fechaExpiracion ?? null,
+		})) } : {}),
+	};
+
+	const resp = await api.post('/pedidos', payload);
+	return mapOrder(resp.data);
+}
+
+export async function updateOrder(id, order) {
+	const payload = {
+		...(order.fecha ? { fecha: order.fecha } : {}),
+		...(order.estado ? { estado: order.estado } : {}),
+		...(order.total !== undefined ? { total: order.total } : {}),
+		...(order.productos ? { productos: order.productos } : {}),
+	};
+	const resp = await api.put(`/pedidos/${id}`, payload);
+	return mapOrder(resp.data);
+}
+
+export async function deleteOrder(id) {
+	const resp = await api.delete(`/pedidos/${id}`);
+	return resp.status === 200 || resp.status === 204;
+}
+
+export async function addProductToOrder(idPedido, idProducto) {
+	const resp = await api.post(`/pedidos/${idPedido}/productos/${idProducto}`);
+	return mapOrder(resp.data);
+}
+
+export async function removeProductFromOrder(idPedido, idProducto) {
+	const resp = await api.delete(`/pedidos/${idPedido}/productos/${idProducto}`);
+	return mapOrder(resp.data);
 }
 
 /**

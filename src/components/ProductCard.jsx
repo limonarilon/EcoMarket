@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
+import { getImageSrc } from './Images';
+
 const ProductCard = ({ productId, img, title, price, originalPrice, discount, product, onAddToCart }) => {
   const navigate = useNavigate();
   const handleProductClick = () => {
@@ -9,7 +11,7 @@ const ProductCard = ({ productId, img, title, price, originalPrice, discount, pr
     <div className="col-md-3 col-sm-6 mb-4">
       <div className="product-card">
         <img
-          src={img}
+          src={getImageSrc(img)}
           alt={title}
           className="img-fluid"
           onClick={handleProductClick}

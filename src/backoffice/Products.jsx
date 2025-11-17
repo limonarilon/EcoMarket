@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getProducts, createProduct, updateProduct, deleteProduct } from "../services/api";
 import { Table, Button, Modal, Form, Alert } from "react-bootstrap";
 
 const Products = () => {
@@ -6,11 +7,28 @@ const Products = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   // Estado para los productos
-  const [products, setProducts] = useState([
-    { id: 1, name: "Aceite de Coco", price: 8500, stock: 25, expirationDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0,10) },
-    { id: 2, name: "Quinoa Premium", price: 6000, stock: 42, expirationDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0,10) },
-    { id: 3, name: "Pasta Integral", price: 3200, stock: 60, expirationDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().slice(0,10) },
-  ]);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        const resp = await getProducts();
+        const ui = (resp || []).map(p => ({
+          id: p.id,
+          name: p.name || p.nombre,
+          price: p.price !== undefined ? p.price : p.precio,
+          stock: p.stock !== undefined ? p.stock : p.cantidad || 0,
+          expirationDate: p.expirationDate || p.vencimiento || "",
+        }));
+        if (mounted) setProducts(ui);
+      } catch (e) {
+        console.error('Error cargando productos en backoffice', e);
+      }
+    }
+    load();
+    return () => { mounted = false; };
+  }, []);
 
   // Estados para el modal
   const [showModal, setShowModal] = useState(false);
@@ -141,25 +159,38 @@ const Products = () => {
       categoria: categoriaFinal
     };
 
-    if (editingProduct) {
-      // Editar producto existente
-      setProducts(prev => prev.map(product => 
-        product.id === editingProduct.id 
-          ? { ...product, ...productData }
-          : product
-      ));
-      showAlertMessage("Producto actualizado exitosamente", "success");
-    } else {
-      // Crear nuevo producto
-      const newProduct = {
-        id: generateNewId(),
-        ...productData
-      };
-      setProducts(prev => [...prev, newProduct]);
-      showAlertMessage("Producto creado exitosamente", "success");
-    }
-
-    handleCloseModal();
+    (async () => {
+      try {
+        if (editingProduct) {
+          const updated = await updateProduct(editingProduct.id, productData);
+          // mapProducto returns { id, name, price, img, stock, ... }
+          setProducts(prev => prev.map(p => p.id === updated.id ? {
+            ...p,
+            name: updated.name || productData.name,
+            price: updated.price !== undefined ? updated.price : productData.price,
+            stock: updated.stock !== undefined ? updated.stock : productData.stock,
+            expirationDate: updated.expirationDate || productData.expirationDate,
+          } : p));
+          showAlertMessage("Producto actualizado exitosamente", "success");
+        } else {
+          const created = await createProduct(productData);
+          const newProduct = {
+            id: created.id,
+            name: created.name || productData.name,
+            price: created.price !== undefined ? created.price : productData.price,
+            stock: created.stock !== undefined ? created.stock : productData.stock,
+            expirationDate: created.expirationDate || productData.expirationDate,
+          };
+          setProducts(prev => [...prev, newProduct]);
+          showAlertMessage("Producto creado exitosamente", "success");
+        }
+      } catch (e) {
+        console.error('Error guardando producto en backoffice', e);
+        showAlertMessage('Error guardando producto: ' + (e.message || ''), 'danger');
+      } finally {
+        handleCloseModal();
+      }
+    })();
   };
 
   // Función para eliminar producto
@@ -248,11 +279,22 @@ const Products = () => {
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             Cancelar
           </Button>
-          <Button variant="danger" onClick={() => {
-            setProducts(prev => prev.filter(product => product.id !== productToDelete));
-            showAlertMessage("Producto eliminado exitosamente", "info");
-            setShowDeleteModal(false);
-            setProductToDelete(null);
+          <Button variant="danger" onClick={async () => {
+            try {
+              const ok = await deleteProduct(productToDelete);
+              if (ok) {
+                setProducts(prev => prev.filter(product => product.id !== productToDelete));
+                showAlertMessage("Producto eliminado exitosamente", "info");
+              } else {
+                showAlertMessage("No se pudo eliminar el producto", "danger");
+              }
+            } catch (e) {
+              console.error('Error eliminando producto', e);
+              showAlertMessage('Error eliminando producto: ' + (e.message || ''), 'danger');
+            } finally {
+              setShowDeleteModal(false);
+              setProductToDelete(null);
+            }
           }}>
             Eliminar
           </Button>
