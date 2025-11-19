@@ -2,17 +2,24 @@ import React from "react";
 import { useNavigate } from 'react-router-dom';
 import { getImageSrc } from './Images';
 
-const ProductCard = ({ productId, img, title, price, originalPrice, discount, product, onAddToCart }) => {
+const ProductCard = ({ productId, img, title, price, product, onAddToCart }) => {
+
+  const finalTitle = title || product?.title || product?.nombre || product?.name || "Sin nombre";
+  // Si el precio ya tiene '$', no lo agregues de nuevo
+  const finalPrice = price ?? product?.precio ?? product?.price ?? "—";
+
   const navigate = useNavigate();
   const handleProductClick = () => {
     navigate(`/product/${productId}`);
   };
+
   return (
     <div className="col-md-3 col-sm-6 mb-4">
       <div className="product-card">
+
         <img
           src={getImageSrc(img)}
-          alt={title}
+          alt={finalTitle}
           className="img-fluid"
           onClick={handleProductClick}
           style={{
@@ -25,30 +32,37 @@ const ProductCard = ({ productId, img, title, price, originalPrice, discount, pr
             margin: '0 auto'
           }}
         />
-        <h5 className="product-title mt-2" onClick={handleProductClick} style={{ cursor: 'pointer' }}>{title}</h5>
-        {/* Fecha de expiración si existe */}
-        {product && product.expirationDate && (
-          <p className="mb-1"><small className="text-muted">Expira: {product.expirationDate}</small></p>
+
+        <h5
+          className="product-title mt-2"
+          onClick={handleProductClick}
+          style={{ cursor: 'pointer' }}
+        >
+          {finalTitle}
+        </h5>
+
+        {/* Fecha de expiración */}
+        {product?.expirationDate && (
+          <p className="mb-1">
+            <small className="text-muted">
+              Expira: {product.expirationDate}
+            </small>
+          </p>
         )}
-        {/* Precios con oferta */}
+
+        {/* Precio */}
         <div className="price-section">
-          {originalPrice ? (
-            <div>
-              <span className="current-price text-success fw-bold fs-5">{price}</span>
-              <span className="original-price text-muted text-decoration-line-through ms-2">{originalPrice}</span>
-              {discount && (
-                <span className="discount-badge badge bg-danger ms-2">{discount} OFF</span>
-              )}
-            </div>
-          ) : (
-            <p className="product-price">{price}</p>
-          )}
+          <p className="product-price text-success fw-bold fs-5">
+            {String(finalPrice).includes('$') ? finalPrice : `$${finalPrice}`}
+          </p>
         </div>
+
         {onAddToCart && (
           <button className="btn btn-primary mt-2" onClick={onAddToCart}>
             Agregar al carrito
           </button>
         )}
+        
       </div>
     </div>
   );

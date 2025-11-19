@@ -67,20 +67,34 @@ function extractEmbedded(resp, key) {
  * evitar cambios en el backend. `_links` se mantiene por si es necesario.
  */
 function mapProducto(apiItem) {
-	// Convertimos los campos del backend (español) a los que espera el frontend
-	// (inglés), para no tener que cambiar todos los componentes.
-	const rawImg = apiItem.img ?? apiItem.image ?? null;
-	const isAbsoluteUrl = (s) => typeof s === 'string' && (s.startsWith('http://') || s.startsWith('https://') || s.startsWith('//'));
-	const img = isAbsoluteUrl(rawImg) ? rawImg : (rawImg ? String(rawImg).trim() : null);
+	const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+
+	
+	const rawImg =
+		apiItem.imagen ??
+		apiItem.img ??
+		apiItem.image ??
+		null;
+
+	let img = null;
+
+	if (rawImg) {
+		const isAbsolute =
+			rawImg.startsWith('http://') ||
+			rawImg.startsWith('https://') ||
+			rawImg.startsWith('//');
+
+		img = isAbsolute
+			? rawImg
+			: `${apiBase}/productos/uploads/${rawImg}`;
+	}
 
 	return {
 		id: apiItem.id,
 		name: apiItem.nombre,
-		price: apiItem.precio, // entero en CLP
-		img, // puede ser URL absoluta o una clave local (nombre de archivo) o href a recurso de imagen
+		price: apiItem.precio,
+		img,
 		stock: apiItem.stock,
-		// Si el backend devuelve campos extra (por ejemplo categoria, expirationDate),
-		// los podemos incluir aquí si existen.
 		expirationDate: apiItem.expirationDate ?? apiItem.fechaExpiracion ?? null,
 		category: apiItem.categoria ?? null,
 		_links: apiItem._links,

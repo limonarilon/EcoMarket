@@ -5,6 +5,7 @@ import ProductCard from "./ProductCard";
 import "../assets/css/Featured.css";
 
 const Featured = ({ products, onAddToCart }) => {
+    console.log('Featured products:', products);
   return (
     <div
       style={{
@@ -57,17 +58,17 @@ const Featured = ({ products, onAddToCart }) => {
                 ...product,
                 expirationDate: product.expirationDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0,10)
               };
-              return (
-                <ProductCard
-                      key={safeProduct.id}
-                      productId={safeProduct.id}
-                      img={safeProduct.img}
-                      title={safeProduct.title}
-                      price={safeProduct.price}
-                      product={safeProduct}
-                      onAddToCart={() => onAddToCart(safeProduct)}
-                    />
-              );
+                return (
+                  <ProductCard
+                    key={safeProduct.id}
+                    productId={safeProduct.id}
+                    img={safeProduct.img}
+                    title={safeProduct.title}
+                    price={safeProduct.price}
+                    product={safeProduct}
+                    onAddToCart={() => onAddToCart(safeProduct)}
+                  />
+                );
             })}
           </div>
         </div>
