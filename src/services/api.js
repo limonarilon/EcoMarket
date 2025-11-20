@@ -118,7 +118,7 @@ function mapUsuario(apiItem) {
 }
 
 // --- Productos ---
-// --- Productos ---
+
 // Funciones para obtener/crear/actualizar/eliminar productos.
 // Todas esperan y devuelven objetos con los nombres del backend.
 export async function getProducts(params = {}) {
@@ -169,7 +169,7 @@ export async function deleteProduct(id) {
 }
 
 // --- Usuarios ---
-// --- Usuarios ---
+
 export async function getUsers(params = {}) {
 	const resp = await api.get('/usuarios', { params });
 	const items = extractEmbedded(resp, 'usuarioModelList');
@@ -182,24 +182,34 @@ export async function getUser(id) {
 }
 
 export async function createUser(user) {
-	// user esperado por los componentes del frontend: { name, email, password, role }
-	// Mapear al payload que espera el backend: nombre, correo, contrasena, rol
-	const payload = {
-		nombre: user.name,
-		correo: user.email,
-		contrasena: user.password,
-		rol: user.role || (user.role === undefined ? 'USER' : user.role),
-	};
-	const resp = await api.post('/usuarios', payload);
-	return mapUsuario(resp.data);
+  const payload = {
+    nombre: user.nombre ?? user.name,   // <-- asegúrate de usar `nombre`
+    email: user.email,
+    password: user.password,
+    rut: user.rut,
+    rol: user.rol || 'USER'
+  };
+
+  try {
+    const resp = await api.post('/usuarios', payload);
+    return mapUsuario(resp.data);
+  } catch (err) {
+    console.error('--- ERROR EN CREATEUSER ---');
+    console.error('Payload enviado:', payload);
+    console.error('Response completa del backend:', err.response);
+    throw err;
+  }
 }
+
+
 
 export async function updateUser(id, user) {
 	const payload = {
-		nombre: user.name,
+		nombre: user.nombre ?? user.name,
 		correo: user.email,
 		...(user.password ? { contrasena: user.password } : {}),
-		rol: user.role,
+		rut: user.rut,
+		rol: user.role
 	};
 	const resp = await api.put(`/usuarios/${id}`, payload);
 	return mapUsuario(resp.data);
