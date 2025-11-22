@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 
 /*
@@ -111,7 +110,7 @@ function mapUsuario(apiItem) {
 	return {
 		id: apiItem.id,
 		name: apiItem.nombre,
-		email: apiItem.correo,
+		email: apiItem.email,
 		role: apiItem.rol,
 		_links: apiItem._links,
 	};
@@ -171,9 +170,9 @@ export async function deleteProduct(id) {
 // --- Usuarios ---
 
 export async function getUsers(params = {}) {
-	const resp = await api.get('/usuarios', { params });
-	const items = extractEmbedded(resp, 'usuarioModelList');
-	return items.map(mapUsuario);
+  const resp = await api.get('/usuarios', { params });
+  const items = resp.data._embedded?.usuarioModelList || resp.data; // Manejar ambos casos
+  return items.map(mapUsuario);
 }
 
 export async function getUser(id) {
@@ -307,6 +306,33 @@ export function formatPriceCLP(value) {
 	} catch (e) {
 		return String(value);
 	}
+}
+
+/**
+ * Realiza el inicio de sesión enviando las credenciales del usuario al servidor.
+ * @param {string} email - Correo electrónico del usuario.
+ * @param {string} password - Contraseña del usuario.
+ * @returns {Promise<{ token: string, role: string }>} - Devuelve el token JWT y el rol del usuario.
+ * @throws {Error} - Lanza un error si las credenciales son incorrectas o si ocurre algún problema.
+ */
+export async function login(email, password) {
+  try {
+    const response = await api.post('/auth/login', { email, password });
+
+    // Extraer el token y el rol de la respuesta del servidor
+    const { token, role } = response.data;
+
+    // Guardar el token en localStorage para futuras solicitudes
+    localStorage.setItem('token', token);
+
+    return { token, role };
+  } catch (error) {
+    // Manejar errores del servidor
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);//si el servidor devuelve un mensaje de error
+    }
+    throw new Error('Error al iniciar sesión. Por favor, intenta nuevamente.');//si no, error genérico
+  }
 }
 
 export default api;

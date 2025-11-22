@@ -1,65 +1,35 @@
 import React from "react";
-import { Card, Row, Col, Table, Badge, ProgressBar } from "react-bootstrap";
-import { 
-  ShoppingCart, 
-  DollarSign, 
-  Users, 
-  Package, 
-  TrendingUp, 
-  TrendingDown,
-  Eye,
-  AlertTriangle
-} from "lucide-react";
+import { Card, Row, Col, Table, Badge } from "react-bootstrap";
+import { ShoppingCart, DollarSign, Users, Package } from "lucide-react";
 import "../styles/dashboard.css";
 
 const Dashboard = () => {
-  // Datos simulados 
+  // Datos simulados
   const stats = {
     totalProducts: 128,
     totalUsers: 42,
-    totalSales: 1250000,
-    monthlyOrders: 85,
-    pendingOrders: 12,
-    lowStockProducts: 8,
     monthlyRevenue: 450000,
-    conversionRate: 3.2
+    monthlyOrders: 85,
   };
 
   const recentOrders = [
-    { id: "#ORD-001", customer: "María García", total: 85000, status: "pending", date: "2025-10-11" },
-    { id: "#ORD-002", customer: "Juan Pérez", total: 125000, status: "completed", date: "2025-10-11" },
-    { id: "#ORD-003", customer: "Ana López", total: 67000, status: "processing", date: "2025-10-10" },
-    { id: "#ORD-004", customer: "Carlos Silva", total: 95000, status: "completed", date: "2025-10-10" },
-    { id: "#ORD-005", customer: "Laura Ruiz", total: 156000, status: "pending", date: "2025-10-09" }
+    { id: "#ORD-001", customer: "María García", total: 85000, status: "Pendiente", date: "2025-10-11" },
+    { id: "#ORD-002", customer: "Juan Pérez", total: 125000, status: "Completado", date: "2025-10-11" },
+    { id: "#ORD-003", customer: "Ana López", total: 67000, status: "Procesando", date: "2025-10-10" },
+    { id: "#ORD-004", customer: "Carlos Silva", total: 95000, status: "Completado", date: "2025-10-10" },
+    { id: "#ORD-005", customer: "Laura Ruiz", total: 156000, status: "Pendiente", date: "2025-10-09" },
   ];
 
   const topProducts = [
-    { name: "Proteína de Soya Orgánica", sales: 45, revenue: 675000 },
-    { name: "Alimento vegetal NotMilk", sales: 38, revenue: 380000 },
-    { name: "Proteína deportiva de arvejas", sales: 32, revenue: 480000 },
-    { name: "Maqui antioxidante en polvo", sales: 28, revenue: 420000 }
+    { name: "Proteína de Soya Orgánica", sales: 45 },
+    { name: "Alimento vegetal NotMilk", sales: 38 },
+    { name: "Proteína deportiva de arvejas", sales: 32 },
   ];
-
-  const getStatusBadge = (status) => {
-    const variants = {
-      pending: 'warning',
-      completed: 'success',
-      processing: 'info',
-      cancelled: 'danger'
-    };
-    const labels = {
-      pending: 'Pendiente',
-      completed: 'Completado',
-      processing: 'Procesando',
-      cancelled: 'Cancelado'
-    };
-    return <Badge bg={variants[status]}>{labels[status]}</Badge>;
-  };
 
   return (
     <div>
       <h2 className="mb-4">Panel Principal</h2>
-      
+
       {/* Métricas Principales */}
       <Row className="mb-4">
         <Col lg={3} md={6}>
@@ -77,7 +47,7 @@ const Dashboard = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col lg={3} md={6}>
           <Card className="shadow-sm mb-3 border-0">
             <Card.Body>
@@ -93,7 +63,7 @@ const Dashboard = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col lg={3} md={6}>
           <Card className="shadow-sm mb-3 border-0">
             <Card.Body>
@@ -109,7 +79,7 @@ const Dashboard = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col lg={3} md={6}>
           <Card className="shadow-sm mb-3 border-0">
             <Card.Body>
@@ -127,53 +97,8 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      {/* Alertas y Estado */}
-      <Row className="mb-4">
-        <Col lg={4} md={6}>
-          <Card className="shadow-sm mb-3 border-0">
-            <Card.Body>
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <Card.Title className="text-muted fs-6 mb-1">Pedidos Pendientes</Card.Title>
-                  <Card.Text className="fs-4 fw-bold text-primary mb-0">{stats.pendingOrders}</Card.Text>
-                </div>
-                <AlertTriangle className="text-warning" size={20} />
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        
-        <Col lg={4} md={6}>
-          <Card className="shadow-sm mb-3 border-0">
-            <Card.Body>
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <Card.Title className="text-muted fs-6 mb-1">Stock Bajo</Card.Title>
-                  <Card.Text className="fs-4 fw-bold text-primary mb-0">{stats.lowStockProducts}</Card.Text>
-                </div>
-                <Package className="text-danger" size={20} />
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        
-        <Col lg={4} md={6}>
-          <Card className="shadow-sm mb-3 border-0">
-            <Card.Body>
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <Card.Title className="text-muted fs-6 mb-1">Tasa Conversión</Card.Title>
-                  <Card.Text className="fs-4 fw-bold text-success mb-0">{stats.conversionRate}%</Card.Text>
-                </div>
-                <TrendingUp className="text-success" size={20} />
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
+      {/* Pedidos Recientes */}
       <Row>
-        {/* Pedidos Recientes */}
         <Col lg={8}>
           <Card className="shadow-sm mb-4 border-0">
             <Card.Header className="bg-white">
@@ -196,7 +121,11 @@ const Dashboard = () => {
                       <td className="fw-bold">{order.id}</td>
                       <td>{order.customer}</td>
                       <td>${order.total.toLocaleString()}</td>
-                      <td>{getStatusBadge(order.status)}</td>
+                      <td>
+                        <Badge bg={order.status === "Completado" ? "success" : order.status === "Pendiente" ? "warning" : "info"}>
+                          {order.status}
+                        </Badge>
+                      </td>
                       <td>{new Date(order.date).toLocaleDateString()}</td>
                     </tr>
                   ))}
@@ -206,27 +135,23 @@ const Dashboard = () => {
           </Card>
         </Col>
 
-        {/* Productos Top */}
+        {/* Productos Más Vendidos */}
         <Col lg={4}>
           <Card className="shadow-sm mb-4 border-0">
             <Card.Header className="bg-white">
               <Card.Title className="mb-0">Productos Más Vendidos</Card.Title>
             </Card.Header>
             <Card.Body>
-              {topProducts.map((product, index) => (
-                <div key={index} className="mb-3">
-                  <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="fw-medium">{product.name}</span>
-                    <Badge bg="primary">{product.sales}</Badge>
-                  </div>
-                  <div className="text-muted small mb-2">${product.revenue.toLocaleString()}</div>
-                  <ProgressBar 
-                    now={(product.sales / 50) * 100} 
-                    style={{ height: '6px' }} 
-                    className="mb-2"
-                  />
-                </div>
-              ))}
+              <ul className="list-unstyled mb-0">
+                {topProducts.map((product, index) => (
+                  <li key={index} className="mb-3">
+                    <div className="d-flex justify-content-between">
+                      <span>{product.name}</span>
+                      <Badge bg="primary">{product.sales} ventas</Badge>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </Card.Body>
           </Card>
         </Col>

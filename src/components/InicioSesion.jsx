@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import formattedImages from './Images';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
+import { login } from '../services/api';
 
 const InicioSesion = () => {
     const [email, setEmail] = useState('');
@@ -9,13 +10,13 @@ const InicioSesion = () => {
     const [error, setError] = useState('');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const navigate = useNavigate();
-
+    const [isLoading, setIsLoading] = useState(false);
     const validateEmail = (email) => {
         // Validación básica de correo
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
@@ -23,21 +24,33 @@ const InicioSesion = () => {
             setError('Correo electrónico inválido.');
             return;
         }
-        // Simulación de roles
-        if (email === 'admin@ecomarket.cl' && password === 'claveadmin123') {
-            // Guardamos rol en localStorage
-            localStorage.setItem('userRole', 'admin');
+        try {
+            setIsLoading(true); // Iniciar carga
+            // Llamada a la función de login del servicio API
+            const { token, role } = await login(email, password);
+
+            // Guardar el token en localStorage
+            localStorage.setItem('token', token);
+            console.log('Token guardado en localStorage:', localStorage.getItem('token'));
+            // Mostrar modal de éxito
             setShowSuccessModal(true);
-            return;
+            setIsLoading(false); // Finalizar carga
+            console.log('Rol recibido en handleSubmit:', role);
+            // Redirigir según el rol
+            if (role === 'ROLE_ADMIN') {
+                navigate('/backoffice');
+            } else {
+                navigate('/');
+            }
+        } catch (err) {
+            setIsLoading(false); // Finalizar carga en caso de error
+            let errorMessage = 'Error al iniciar sesión. Por favor, intenta nuevamente.';
+            if (err.message) {
+                // Usar el mensaje del backend si está disponible
+                errorMessage = err.message;
+            }
+            setError(errorMessage);
         }
-        if (password !== 'Claveprueba123') {
-            setError('Contraseña incorrecta.');
-            return;
-        }
-        // Usuario normal
-        localStorage.setItem('userRole', 'user');
-        // Mostrar modal de éxito
-        setShowSuccessModal(true);
     };
 
     const handleCloseModal = () => {
@@ -106,8 +119,8 @@ const InicioSesion = () => {
                                             </div>
                                         )}
                                         <div className="d-grid">
-                                            <button type="submit" className="btn btn-primary">
-                                                Ingresar
+                                            <button type="submit" className="btn btn-primary" disabled={isLoading}>
+                                                {isLoading ? 'Cargando...' : 'Ingresar'}
                                             </button>
                                         </div>
                                     </form>

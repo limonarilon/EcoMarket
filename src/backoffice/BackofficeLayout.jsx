@@ -14,7 +14,7 @@ const BackofficeLayout = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("token");
     navigate("/iniciar-sesion");
   };
 

@@ -165,7 +165,7 @@ function App() {
       />
 
       <Routes>
-  {/* Rutas públicas existentes */}
+         {/* Rutas públicas existentes */}
         <Route path="/" element={<Home products={products} onAddToCart={handleAddToCart} />} />
         <Route path="/ofertas" element={<Ofertas products={offerProducts} onAddToCart={handleAddToCart} />} />
         <Route path="/categoria/:categoria" element={<Categoria onAddToCart={handleAddToCart} />} />
@@ -179,11 +179,13 @@ function App() {
         <Route path="/iniciar-sesion" element={<InicioSesion />} />
         <Route path="/product/:id" element={<ProductDetail products={[...products, ...offerProducts]} />} />
         <Route path="/carrito" element={
-          <Cart
-            cart={cart}
-            onRemove={handleRemoveFromCart}
-            onUpdateQuantity={handleUpdateQuantity}
-          />
+          <PrivateRoute>
+            <Cart
+              cart={cart}
+              onRemove={handleRemoveFromCart}
+              onUpdateQuantity={handleUpdateQuantity}
+            />
+          </PrivateRoute>
         } />
         <Route path="/pago" element={<Pago />} />
         {/* Rutas adicionales del footer */}
@@ -197,20 +199,16 @@ function App() {
         <Route path="/informacion-envios" element={<ShippingInfo />} />
         
         {/*  Rutas privadas (solo admin) */}
-        <Route
-          path="/backoffice/*"
-          element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <BackofficeLayout />
-            </PrivateRoute>
-          }
-        >
+        <Route path="/backoffice/*" element={
+          <PrivateRoute adminOnly={true}>
+            <BackofficeLayout />
+          </PrivateRoute>
+        }>
           <Route index element={<Dashboard />} />
-          <Route path="products" element={<Products />} />
           <Route path="accounts" element={<Accounts />} />
+          <Route path="products" element={<Products />} />
           <Route path="boletas" element={<Boletas />} />
-        </Route>
-
+        </Route>     
       </Routes>
       
       <Footer />
