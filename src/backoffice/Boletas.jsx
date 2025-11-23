@@ -1,33 +1,106 @@
-import React, { useState } from "react";
-import { Table, Button, Modal } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Table, Button, Modal, Form } from "react-bootstrap";
+import { getOrders, updateOrder, deleteOrder, addProductToOrder, removeProductFromOrder } from "../services/api";
 
 const Boletas = () => {
-  // Datos de ejemplo de boletas
-  const [boletas] = useState([
-    { numero: "1001", cliente: "Juan Pérez", monto: 25000, fecha: "2025-10-10" },
-    { numero: "1002", cliente: "María Soto", monto: 18000, fecha: "2025-10-11" },
-    { numero: "1003", cliente: "Carlos Ruiz", monto: 32000, fecha: "2025-10-12" },
-    { numero: "1004", cliente: "Ana Gómez", monto: 15000, fecha: "2025-10-13" },
-    { numero: "1005", cliente: "Luis Fernández", monto: 22000, fecha: "2025-10-14" },
-    { numero: "1006", cliente: "Sofía Martínez", monto: 27500, fecha: "2025-10-15" },
-    { numero: "1007", cliente: "Diego López", monto: 30000, fecha: "2025-10-16" },
-    { numero: "1008", cliente: "Valentina Rojas", monto: 19500, fecha: "2025-10-17" },
-  ]);
+  const [boletas, setBoletas] = useState([]);
   const [search, setSearch] = useState("");
-  const filteredBoletas = search
-    ? boletas.filter(b => b.numero.includes(search))
-    : boletas;
   const [showModal, setShowModal] = useState(false);
   const [selectedBoleta, setSelectedBoleta] = useState(null);
+  const [editingBoleta, setEditingBoleta] = useState(null);
+
+  // Cargar boletas desde el backend
+  useEffect(() => {
+    async function cargar() {
+      try {
+        const data = await getOrders();
+        setBoletas(
+          data.map(o => ({
+            numero: o.id,
+            cliente: "Cliente N/A", // ← si después le agregas cliente al backend, lo mapeamos
+            monto: o.total ?? 0,
+            fecha: o.fecha?.substring(0, 10) ?? "Sin fecha",
+            productos: o.productos ?? []
+          }))
+        );
+      } catch (e) {
+        console.error("Error cargando pedidos", e);
+      }
+    }
+    cargar();
+  }, []);
+
+  const filteredBoletas = search
+    ? boletas.filter(b => String(b.numero).includes(search))
+    : boletas;
 
   const handleViewBoleta = (numero) => {
-    const boleta = boletas.find(b => b.numero === numero);
+    const boleta = boletas.find(b => String(b.numero) === String(numero));
     setSelectedBoleta(boleta);
     setShowModal(true);
   };
+
+  const handleEditBoleta = (numero) => {
+    const boleta = boletas.find(b => String(b.numero) === String(numero));
+    setEditingBoleta(boleta);
+  };
+
+  const handleSaveEdit = async () => {
+    if (editingBoleta) {
+      try {
+        const updatedBoleta = await updateOrder(editingBoleta.numero, {
+          total: editingBoleta.monto,
+          fecha: editingBoleta.fecha,
+        });
+        setBoletas(prev => prev.map(b => (b.numero === updatedBoleta.id ? {
+          ...b,
+          monto: updatedBoleta.total,
+          fecha: updatedBoleta.fecha,
+        } : b)));
+        setEditingBoleta(null);
+      } catch (e) {
+        console.error("Error actualizando boleta", e);
+      }
+    }
+  };
+
+  const handleDeleteBoleta = async (numero) => {
+    try {
+      await deleteOrder(numero);
+      setBoletas(prev => prev.filter(b => b.numero !== numero));
+    } catch (e) {
+      console.error("Error eliminando boleta", e);
+    }
+  };
+
+  const handleAddProduct = async (idPedido, idProducto) => {
+    try {
+      const updatedBoleta = await addProductToOrder(idPedido, idProducto);
+      setBoletas(prev => prev.map(b => (b.numero === updatedBoleta.id ? {
+        ...b,
+        productos: updatedBoleta.productos,
+      } : b)));
+    } catch (e) {
+      console.error("Error añadiendo producto a la boleta", e);
+    }
+  };
+
+  const handleRemoveProduct = async (idPedido, idProducto) => {
+    try {
+      const updatedBoleta = await removeProductFromOrder(idPedido, idProducto);
+      setBoletas(prev => prev.map(b => (b.numero === updatedBoleta.id ? {
+        ...b,
+        productos: updatedBoleta.productos,
+      } : b)));
+    } catch (e) {
+      console.error("Error eliminando producto de la boleta", e);
+    }
+  };
+
   return (
     <div>
       <h2 className="mb-4">Boletas / Órdenes</h2>
+
       <div className="mb-3">
         <input
           type="text"
@@ -37,31 +110,36 @@ const Boletas = () => {
           onChange={e => setSearch(e.target.value)}
         />
       </div>
+
       <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>N° Orden</th>
-            <th>Cliente</th>
             <th>Monto</th>
             <th>Fecha</th>
-            <th>Ver Boleta</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {filteredBoletas.length === 0 ? (
             <tr>
-              <td colSpan="5" className="text-center py-4">No hay boletas registradas.</td>
+              <td colSpan="4" className="text-center py-4">No hay boletas registradas.</td>
             </tr>
           ) : (
             filteredBoletas.map((boleta, idx) => (
               <tr key={idx}>
                 <td>{boleta.numero}</td>
-                <td>{boleta.cliente}</td>
-                <td>${boleta.monto.toLocaleString('es-CL')}</td>
+                <td>${boleta.monto?.toLocaleString("es-CL")}</td>
                 <td>{boleta.fecha}</td>
                 <td>
                   <Button size="sm" variant="info" onClick={() => handleViewBoleta(boleta.numero)}>
-                    Ver boleta
+                    Ver
+                  </Button>{' '}
+                  <Button size="sm" variant="warning" onClick={() => handleEditBoleta(boleta.numero)}>
+                    Editar
+                  </Button>{' '}
+                  <Button size="sm" variant="danger" onClick={() => handleDeleteBoleta(boleta.numero)}>
+                    Eliminar
                   </Button>
                 </td>
               </tr>
@@ -69,7 +147,43 @@ const Boletas = () => {
           )}
         </tbody>
       </Table>
-      {/* Modal para mostrar detalle de boleta */}
+
+      {editingBoleta && (
+        <Modal show={true} onHide={() => setEditingBoleta(null)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Editar Boleta</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label>Monto</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={editingBoleta.monto}
+                  onChange={(e) => setEditingBoleta({ ...editingBoleta, monto: e.target.value })}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Fecha</Form.Label>
+                <Form.Control
+                  type="date"
+                  value={editingBoleta.fecha}
+                  onChange={(e) => setEditingBoleta({ ...editingBoleta, fecha: e.target.value })}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setEditingBoleta(null)}>
+              Cancelar
+            </Button>
+            <Button variant="primary" onClick={handleSaveEdit}>
+              Guardar Cambios
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
       {selectedBoleta && (
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header closeButton>
@@ -77,10 +191,25 @@ const Boletas = () => {
           </Modal.Header>
           <Modal.Body>
             <p><strong>N° Orden:</strong> {selectedBoleta.numero}</p>
-            <p><strong>Cliente:</strong> {selectedBoleta.cliente}</p>
-            <p><strong>Monto:</strong> ${selectedBoleta.monto.toLocaleString('es-CL')}</p>
+            <p><strong>Monto:</strong> ${selectedBoleta.monto.toLocaleString("es-CL")}</p>
             <p><strong>Fecha:</strong> {selectedBoleta.fecha}</p>
+
+            <hr />
+            <h5>Productos</h5>
+            {selectedBoleta.productos.length === 0 ? (
+              <p>Sin productos</p>
+            ) : (
+              selectedBoleta.productos.map((p, idx) => (
+                <p key={idx}>
+                  - {p.name} (${p.price?.toLocaleString("es-CL")})
+                  <Button size="sm" variant="danger" onClick={() => handleRemoveProduct(selectedBoleta.numero, p.id)}>
+                    Eliminar
+                  </Button>
+                </p>
+              ))
+            )}
           </Modal.Body>
+
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowModal(false)}>
               Cerrar

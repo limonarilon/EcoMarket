@@ -43,9 +43,11 @@ api.interceptors.request.use((config) => {
 		if (token) {
 			config.headers = config.headers || {};
 			config.headers.Authorization = `Bearer ${token}`;
+			console.log("Token añadido al header:", config.headers.Authorization); // Log para depuración
 		}
+		console.log("Configuración de la solicitud:", config); // Log para depuración
 	} catch (e) {
-		// Si no se puede acceder a localStorage (por ejemplo en tests), no fallar
+		console.error("Error al añadir el token al header:", e); // Log para depuración
 	}
 	return config;
 });
@@ -205,10 +207,10 @@ export async function createUser(user) {
 export async function updateUser(id, user) {
 	const payload = {
 		nombre: user.nombre ?? user.name,
-		correo: user.email,
+		email: user.email,
 		...(user.password ? { contrasena: user.password } : {}),
 		rut: user.rut,
-		rol: user.role
+		rol: user.rol
 	};
 	const resp = await api.put(`/usuarios/${id}`, payload);
 	return mapUsuario(resp.data);
@@ -219,7 +221,7 @@ export async function deleteUser(id) {
 	return resp.status === 200 || resp.status === 204;
 }
 
-// --- Pedidos (Orders) ---
+// --- Pedidos (boletas) ---
 /**
  * Mapea un objeto Pedido devuelto por el backend a una forma usada por la UI.
  * - Convierte `idPedido` -> `id`

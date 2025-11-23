@@ -1,7 +1,7 @@
-
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import formattedImages from "../assets/images/index";
+import { createOrder } from "../services/api";
 
 const Pago = () => {
   const location = useLocation();
@@ -10,6 +10,7 @@ const Pago = () => {
   const [modalSuccess, setModalSuccess] = useState(true);
   const [metodoPago, setMetodoPago] = useState("transbank");
   const [orderNumber] = useState(() => Math.floor(Math.random() * 100000));
+  const [orderId, setOrderId] = useState(null);
 
   // Calcular total
   const calculateTotal = () => {
@@ -22,8 +23,36 @@ const Pago = () => {
   };
 
   // Abrir modal según resultado
-  const handlePayment = (success) => {
-    setModalSuccess(success);
+  const handlePayment = async (success) => {
+    if (success) {
+      try {
+        // Preparar datos para la orden
+        const nuevaOrden = {
+          fecha: new Date().toISOString(), // Fecha actual en formato ISO
+          estado: "PENDIENTE", // Estado por defecto
+          total: cart.reduce((sum, item) => {
+            const price = parseInt(item.price.replace(/[$.]/g, ""));
+            return sum + price * item.quantity;
+          }, 0),
+          productos: cart.map((item) => ({
+            id: item.id,
+            nombre: item.title,
+            precio: parseInt(item.price.replace(/[$.]/g, "")),
+            cantidad: item.quantity,
+          })),
+        };
+
+        // Crear la orden en el backend
+        const ordenCreada = await createOrder(nuevaOrden);
+        setOrderId(ordenCreada.id);
+        setModalSuccess(true);
+      } catch (error) {
+        console.error("Error al crear la orden:", error);
+        setModalSuccess(false);
+      }
+    } else {
+      setModalSuccess(false);
+    }
     setModalOpen(true);
   };
 
@@ -31,7 +60,7 @@ const Pago = () => {
   const metodoPagoTexto = {
     transbank: "Transbank",
     efectivo: "Efectivo (pago al recibir)",
-    transferencia: "Transferencia"
+    transferencia: "Transferencia",
   };
 
   return (
@@ -47,7 +76,7 @@ const Pago = () => {
       }}
     >
       <h3 className="section-title-llamativo">Simulación de Pago</h3>
-  <h3>N° de orden {orderNumber}</h3>
+      <h3>N° de orden {orderNumber}</h3>
       {cart.length === 0 ? (
         <p>No hay productos en el carrito.</p>
       ) : (
@@ -83,13 +112,15 @@ const Pago = () => {
           </table>
           {/* Selector de método de pago */}
           <div className="my-4 d-flex align-items-center">
-            <label htmlFor="metodoPago" className="form-label fw-bold me-2 mb-0">Selecciona método de pago:</label>
+            <label htmlFor="metodoPago" className="form-label fw-bold me-2 mb-0">
+              Selecciona método de pago:
+            </label>
             <select
               id="metodoPago"
               className="form-select"
               style={{ width: "auto", minWidth: "220px", display: "inline-block" }}
               value={metodoPago}
-              onChange={e => setMetodoPago(e.target.value)}
+              onChange={(e) => setMetodoPago(e.target.value)}
             >
               <option value="transbank">Transbank</option>
               <option value="efectivo">Efectivo (pago al recibir)</option>
@@ -154,10 +185,12 @@ const Pago = () => {
           >
             <h4>
               {modalSuccess
-                ? "¡Pago realizado con éxito!"
+                ? `¡Pago realizado con éxito! Orden creada con ID: ${orderId}`
                 : "El pago ha fallado. Intenta nuevamente."}
             </h4>
-            <p className="mt-2">Método de pago: <strong>{metodoPagoTexto[metodoPago]}</strong></p>
+            <p className="mt-2">
+              Método de pago: <strong>{metodoPagoTexto[metodoPago]}</strong>
+            </p>
             <button
               className="btn btn-primary mt-3"
               onClick={() => setModalOpen(false)}

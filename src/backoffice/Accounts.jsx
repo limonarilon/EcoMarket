@@ -34,7 +34,12 @@ const Accounts = () => {
   const [alertType, setAlertType] = useState("success");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
-
+  // Función para mostrar mensajes de alerta
+  const showAlertMessage = (message, type) => {
+    setAlertMessage(message); // Mensaje que se mostrará
+    setAlertType(type); // Tipo de alerta (por ejemplo, 'success', 'error')
+    setShowAlert(true); // Mostrar la alerta
+  };
   // Funciones auxiliares
   //Función para checar si es admin y cargar usuarios dessde el backend
   const [isAdmin, setIsAdmin] = useState(false);
@@ -145,23 +150,22 @@ const Accounts = () => {
     const payload = {
       nombre: formData.name,
       email: formData.email,
-      rut: formData.rut.replace(/\./g, ''),
-      rol: formData.rol, // Cambiado de "role" a "rol"
+      rut: formData.rut.replace(/\.|-/g, ''), // Enviar el RUT sin puntos ni guiones
+      rol: formData.rol, // Asegurarse de enviar el rol correctamente
     };
-    
-    if (formData.password) {
-      payload.password = formData.password;
-    }
-    console.log("Payload enviado al backend:", payload);
+
+    console.log("Payload enviado al backend:", payload); // Log para depuración
+
     try {
       let newUser;
       if (editingAccount) {
+        console.log("Editando usuario con ID:", editingAccount.id); // Log para depuración
         await updateUser(editingAccount.id, payload);
         showAlertMessage("Usuario actualizado exitosamente", "success");
       } else {
-        console.log("Payload enviado al backend:", payload); // Depuración
+        console.log("Creando nuevo usuario"); // Log para depuración
         const response = await createUser(payload);
-        console.log("Respuesta del backend:", response); // Depuración
+        console.log("Respuesta del backend:", response); // Log para depuración
         newUser = response; // Capturar el usuario creado
         showAlertMessage("Usuario creado exitosamente", "success");
       }
@@ -179,16 +183,17 @@ const Accounts = () => {
     } catch (err) {
       let msg = "No se pudo guardar el usuario.";
       if (err.response) {
+        console.error("Error del backend:", err.response.data); // Log detallado del error
+        console.error("Detalles de la respuesta del backend:", err.response); // Log completo de la respuesta
         if (err.response.status === 409) {
           msg = "El correo electrónico ya está registrado.";
         } else {
           msg = err.response.data.error || err.response.data.message || msg;
         }
+      } else {
+        console.error("Error desconocido al guardar el usuario:", err); // Log para errores desconocidos
       }
-      console.error("Error al guardar el usuario:", err); // Depuración
-      setShowAlert(true);
-      setAlertMessage(msg);
-      setAlertType("danger");
+      showAlertMessage(msg, "danger");
     } finally {
       setLoading(false);
     }
