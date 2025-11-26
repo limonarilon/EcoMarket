@@ -1,80 +1,96 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProducts } from "../services/api";
-import ProductDetail from "./ProductDetail";
 import { Card, Button } from "react-bootstrap";
 import { getImageSrc } from './Images';
 
-// Ahora obtenemos productos desde la API y filtramos por categoría
-
 const Categoria = ({ onAddToCart }) => {
-  const { categoria } = useParams();
+  const { categoria } = useParams(); 
   const navigate = useNavigate();
-  const [filtro, setFiltro] = useState("");
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Productos por categorías
+  const productosData = {
+  "Dulce": [
+    "Chocolate Orgánico 90% cacao", 
+    "Mix Frutos Secos", 
+    "Mermelada Frutal",
+    "Barra de Cereal", 
+    "Galletas Integrales", 
+    "Miel Natural"
+  ],
+  "Salado": [
+    "Quinoa Premium", 
+    "Aceitunas Verdes", 
+    "Pasta Integral Vegana (400g)", 
+    "Mix de Semillas", 
+    "Aceite de Coco"
+  ],
+  "Integral": [
+    "Pan Integral", 
+    "Harina Integral", 
+    "Galletas de Avena", 
+    "Cereal Integral", 
+    "Tortillas Integrales", 
+    "Pasta Integral Vegana (400g)"
+],
+  "Bebestibles":[
+    "Fruta congelada (500g)", 
+    "Kombucha sabor naranja (200ml)", 
+    "Té Chino sabor menta (10u)", 
+    "Jugos de fruta prensados en frio (3u de 200ml)", 
+    "Alimento vegetal de almendras (1Lt)"
+]
+};
+
+
   useEffect(() => {
     let mounted = true;
-    async function load() {
-      try {
-        const resp = await getProducts();
-        // mapear a la forma usada por el UI
-        const ui = (resp || []).map(p => ({
-          id: p.id,
-          nombre: p.name || p.nombre || p.title || `Producto ${p.id}`,
-          precio: p.price !== undefined ? p.price : p.precio,
-          img: p.img || p.image || null,
-          categoria: (p.category || p.categoria || "").toLowerCase(),
-          expirationDate: p.expirationDate || p.vencimiento || null,
-        }));
-
-        if (mounted) {
-          setProductos(ui);
-          setLoading(false);
+    const loadProducts = () => {
+      const productosArray = [];
+      // se filtran los productos por categoria
+      Object.keys(productosData).forEach(categoriaKey => {
+        if (!categoria || categoriaKey.toLowerCase() === categoria.toLowerCase()) {
+          productosData[categoriaKey].forEach(producto => {
+            productosArray.push(producto);
+          });
         }
-      } catch (e) {
-        console.error('Error cargando productos en Categoria', e);
-        if (mounted) setLoading(false);
-      }
-    }
-    load();
-    return () => { mounted = false; };
-  }, []);
+      });
 
-  const productosFiltrados = productos
-    .filter(p => !categoria || p.categoria === categoria.toLowerCase())
-    .filter(p => !filtro || p.nombre.toLowerCase().includes(filtro.toLowerCase()));
+      if (mounted) {
+        setProductos(productosArray);
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+
+    return () => { mounted = false; };
+  }, [categoria]);
 
   if (loading) return <div className="container my-5 text-center"><h3>Cargando productos...</h3></div>;
 
   return (
     <div className="container my-5">
-      <h2 className="mb-4 text-capitalize section-title-llamativo">Categoría: {categoria}</h2>
-      <input
-        type="text"
-        className="form-control w-auto mb-3"
-        placeholder="Filtrar productos..."
-        value={filtro}
-        onChange={e => setFiltro(e.target.value)}
-      />
+      <h2 className="mb-4 text-capitalize">Categoría: {categoria || "Todas"}</h2>
+
       <div className="row">
-        {productosFiltrados.length === 0 ? (
+        {productos.length === 0 ? (
           <div className="col-12 text-center">No hay productos en esta categoría.</div>
         ) : (
-          productosFiltrados.map(producto => (
+          productos.map(producto => (
             <div className="col-md-4 mb-4" key={producto.id}>
               <Card className="h-100">
                 <Card.Img
                   variant="top"
-                  src={getImageSrc(producto.img)}
+                  src={getImageSrc(producto.img)} 
                   alt={producto.nombre}
                   style={{ height: "180px", objectFit: "cover" }}
                 />
                 <Card.Body>
                   <Card.Title
                     style={{ cursor: "pointer" }}
-                    onClick={() => navigate(`/product/${producto.id}`)}
+                    onClick={() => navigate(`/product/${producto.id}`)} 
                   >
                     {producto.nombre}
                   </Card.Title>
@@ -84,9 +100,9 @@ const Categoria = ({ onAddToCart }) => {
                   <Button variant="primary" onClick={() => navigate(`/product/${producto.id}`)}>
                     Ver detalle
                   </Button>
-                  <Button variant="success" className="ms-2" onClick={() => onAddToCart({...producto,
-                    title : producto.nombre,
-                    price : `$${producto.precio.toLocaleString("es-CL")}`,
+                  <Button variant="success" className="ms-2" onClick={() => onAddToCart({
+                    title: producto.nombre,
+                    price: `$${producto.precio.toLocaleString("es-CL")}`,
                     img: producto.img
                   })}>
                     Agregar al carrito

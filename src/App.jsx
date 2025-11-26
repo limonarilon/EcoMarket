@@ -177,6 +177,9 @@ function App() {
         <Route path="/seguimiento-compra" element={<TrackOrder />} />      
         <Route path="/registrarse" element={<RegisterForm />} />
         <Route path="/iniciar-sesion" element={<InicioSesion />} />
+        <Route path="/categoria/:categoria" element={<Categoria />} />
+        <Route path="/product/:id" element={<ProductDetail />} /> {/* Ruta para el detalle del producto */}
+      
         <Route path="/product/:id" element={<ProductDetail products={[...products, ...offerProducts]} />} />
         <Route path="/carrito" element={
           <PrivateRoute>
