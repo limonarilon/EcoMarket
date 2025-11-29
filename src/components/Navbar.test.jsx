@@ -25,16 +25,14 @@ describe('Navbar', () => {// Agrupa las pruebas del componente Navbar
         expect(link).toBeInTheDocument();
         expect(link).toHaveAttribute('href', '/');
     });
-    //Prueba que el enlace a Ofertas está presente
-    it('tiene un enlace a Ofertas', () => {
+    //Prueba que el enlace a Ofertas no está presente (comentado en Navbar)
+    it('no muestra enlace a Ofertas', () => {
         render(
             <MemoryRouter>
                 <Navbar cart={[]} />
             </MemoryRouter>
         );
-        const link = screen.getByRole('link', { name: /ofertas/i });
-        expect(link).toBeInTheDocument();
-        expect(link).toHaveAttribute('href', '/ofertas');
+        expect(screen.queryByRole('link', { name: /ofertas/i })).not.toBeInTheDocument();
     });
     it('muestra el menú desplegable de categorías', () => {//lo mismo para el enlace a Categorías
         render(
@@ -44,15 +42,13 @@ describe('Navbar', () => {// Agrupa las pruebas del componente Navbar
         );
         expect(screen.getByText(/categorías/i)).toBeInTheDocument();
     });
-    it('tiene un enlace a Novedades', () => {//lo mismo para el enlace a Novedades
+    it('no muestra enlace a Novedades', () => {
         render(
             <MemoryRouter>
                 <Navbar cart={[]} />
             </MemoryRouter>
         );
-        const link = screen.getByRole('link', { name: /novedades/i });
-        expect(link).toBeInTheDocument();
-        expect(link).toHaveAttribute('href', '/novedades');
+        expect(screen.queryByRole('link', { name: /novedades/i })).not.toBeInTheDocument();
     });
     it('tiene un enlace a Preguntas frecuentes', () => {//lo mismo para el enlace a Preguntas frecuentes
         render(

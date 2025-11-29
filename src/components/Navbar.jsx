@@ -59,7 +59,7 @@ const Navbar = ({ cart }) => {
                       <Link to="/" className="nav-link">Inicio</Link>
                     </li>
                     <li className="nav-item">
-                      <Link to="/ofertas" className="nav-link">Ofertas</Link>
+                      {/* <Link to="/ofertas" className="nav-link">Ofertas</Link> */}
                     </li>
                     <li className="nav-item dropdown">
                       <a
@@ -80,7 +80,7 @@ const Navbar = ({ cart }) => {
                       </ul>
                     </li>
                     <li className="nav-item">
-                      <Link to="/novedades" className="nav-link">Novedades</Link>
+                      {/* <Link to="/novedades" className="nav-link">Novedades</Link> */}
                     </li>
                     
 

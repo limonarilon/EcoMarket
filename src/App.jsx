@@ -21,8 +21,8 @@ import formattedImages, { getImageSrc } from "./components/Images";
 import Carrusel from "./components/carrusel";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import Ofertas from "./components/Ofertas";
-import Novedades from "./components/Novedades";
+// import Ofertas from "./components/Ofertas";
+// import Novedades from "./components/Novedades";
 import FAQ from "./components/FAQ";
 import About from "./components/About";
 import Contact from "./components/Contact";
@@ -212,9 +212,10 @@ function App() {
       <Routes>
          {/* Rutas públicas existentes */}
         <Route path="/" element={<Home products={products} onAddToCart={handleAddToCart} />} />
-        <Route path="/ofertas" element={<Ofertas products={offerProducts} onAddToCart={handleAddToCart} />} />
+        {/* <Route path="/ofertas" element={<Ofertas products={offerProducts} onAddToCart={handleAddToCart} />} /> */}
         <Route path="/categoria/:categoria" element={<Categoria onAddToCart={handleAddToCart} />} />
-        <Route path="/novedades" element={<Novedades products={products} onAddToCart={handleAddToCart} />} />        <Route path="/preguntas-frecuentes" element={<FAQ />} />
+        {/* <Route path="/novedades" element={<Novedades products={products} onAddToCart={handleAddToCart} />} /> */}
+        <Route path="/preguntas-frecuentes" element={<FAQ />} />
         <Route path="/preguntas-frecuentes" element={<FAQ />} />
         <Route path="/sobre-nosotros" element={<About />} />
         <Route path="/contacto" element={<Contact />} />

@@ -1,4 +1,5 @@
 import React from "react";
+import { getImageSrc } from "./Images";
 
 const Careers = () => (
   <div className="container my-5">
@@ -7,12 +8,12 @@ const Careers = () => (
     <div className="row">
       <div className="col-lg-10 mx-auto">
         <div className="text-center mb-5">
-          <img 
-            src="/assets/equipo-ecomarket.jpg" 
-            alt="Equipo EcoMarket" 
-            className="img-fluid rounded shadow" 
-            style={{ maxWidth: "500px", height: "300px", objectFit: "cover" }} 
-          />
+            <img 
+              src={getImageSrc("equipo-trabajo.png")} 
+              alt="Equipo EcoMarket" 
+              className="img-fluid rounded shadow" 
+              style={{ maxWidth: "500px", height: "300px", objectFit: "cover" }} 
+            />
         </div>
         
         <div className="alert alert-success">

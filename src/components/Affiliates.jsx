@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { getImageSrc } from "./Images";
 
 const Affiliates = () => {
   const navigate = useNavigate();
@@ -10,12 +11,12 @@ const Affiliates = () => {
       
       <div className="row">
         <div className="col-lg-10 mx-auto">
-          <div className="text-center mb-5">
+          <div className="mb-5">
             <img 
-              src="/assets/programa-afiliados.jpg" 
-              alt="Programa de Afiliados EcoMarket" 
-              className="img-fluid rounded shadow" 
-              style={{ maxWidth: "500px", height: "300px", objectFit: "cover" }} 
+              src={getImageSrc("programa-afiliados.jpg")}
+              alt="Programa de Afiliados EcoMarket"
+              className="affiliate-banner w-100"
+              style={{ width: "100%", height: "200px", objectFit: "cover", display: "block" }}
             />
           </div>
           
