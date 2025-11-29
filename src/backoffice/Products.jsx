@@ -151,35 +151,51 @@ const Products = () => {
     const categoriaFinal = formData.categoria === "nueva"
       ? formData.nuevaCategoria.trim()
       : formData.categoria;
-    const productData = {
-      name: formData.name.trim(),
-      price: parseInt(formData.price),
-      stock: parseInt(formData.stock),
-      expirationDate: formData.expirationDate,
-      categoria: categoriaFinal
-    };
 
     (async () => {
       try {
         if (editingProduct) {
+          // Edición: solo datos simples y nombre de imagen
+          const productData = {
+            name: formData.name.trim(),
+            price: parseInt(formData.price),
+            stock: parseInt(formData.stock),
+            expirationDate: formData.expirationDate,
+            categoria: categoriaFinal,
+            img: formData.img || ""
+          };
           const updated = await updateProduct(editingProduct.id, productData);
-          // mapProducto returns { id, name, price, img, stock, ... }
           setProducts(prev => prev.map(p => p.id === updated.id ? {
             ...p,
             name: updated.name || productData.name,
             price: updated.price !== undefined ? updated.price : productData.price,
             stock: updated.stock !== undefined ? updated.stock : productData.stock,
             expirationDate: updated.expirationDate || productData.expirationDate,
+            img: updated.img || productData.img
           } : p));
           showAlertMessage("Producto actualizado exitosamente", "success");
         } else {
-          const created = await createProduct(productData);
+          // Creación: enviar FormData con JSON y archivo
+          const fd = new FormData();
+          const productObj = {
+            name: formData.name.trim(),
+            price: parseInt(formData.price),
+            stock: parseInt(formData.stock),
+            expirationDate: formData.expirationDate,
+            categoria: categoriaFinal
+          };
+          fd.append("producto", new Blob([JSON.stringify(productObj)], { type: 'application/json' }));
+          if (formData.img) {
+            fd.append("img", formData.img);
+          }
+          const created = await createProduct(fd);
           const newProduct = {
             id: created.id,
-            name: created.name || productData.name,
-            price: created.price !== undefined ? created.price : productData.price,
-            stock: created.stock !== undefined ? created.stock : productData.stock,
-            expirationDate: created.expirationDate || productData.expirationDate,
+            name: created.name || productObj.name,
+            price: created.price !== undefined ? created.price : productObj.price,
+            stock: created.stock !== undefined ? created.stock : productObj.stock,
+            expirationDate: created.expirationDate || productObj.expirationDate,
+            img: created.img || ""
           };
           setProducts(prev => [...prev, newProduct]);
           showAlertMessage("Producto creado exitosamente", "success");
@@ -339,6 +355,41 @@ const Products = () => {
                 />
               )}
             </Form.Group>
+            {/* Campo de imagen solo al crear producto */}
+            {!editingProduct ? (
+              <Form.Group className="mb-3">
+                <Form.Label>Imagen del Producto</Form.Label>
+                <Form.Control
+                  type="file"
+                  name="img"
+                  accept="image/*"
+                  onChange={e => {
+                    const file = e.target.files[0];
+                    setFormData(prev => ({
+                      ...prev,
+                      img: file
+                    }));
+                  }}
+                />
+                <Form.Text className="text-muted">
+                  Opcional. Formatos permitidos: JPG, PNG, WEBP.
+                </Form.Text>
+              </Form.Group>
+            ) : (
+              <Form.Group className="mb-3">
+                <Form.Label>Nombre de la imagen</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="img"
+                  value={formData.img || ''}
+                  onChange={handleInputChange}
+                  placeholder="Nombre del archivo de imagen (ej: producto.jpg)"
+                />
+                <Form.Text className="text-muted">
+                  Solo puedes cambiar el nombre, no subir una nueva imagen.
+                </Form.Text>
+              </Form.Group>
+            )}
             <Form.Group className="mb-3">
               <Form.Label>Nombre del Producto *</Form.Label>
               <Form.Control

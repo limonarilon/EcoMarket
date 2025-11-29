@@ -135,14 +135,20 @@ export async function getProduct(id) {
 }
 
 export async function createProduct(product) {
-	// product esperado en el frontend: { name, price, stock, expirationDate?, category? }
-	// Aquí mapeamos al payload que espera el backend (español): nombre, precio, stock
+	// Si el argumento es FormData, enviar como multipart/form-data
+	if (product instanceof FormData) {
+		const resp = await api.post('/productos', product, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+		return mapProducto(resp.data);
+	}
+	// Si no, enviar como JSON normal
 	const payload = {
 		nombre: product.name,
 		precio: product.price,
 		stock: product.stock,
-		// Si el backend soporta campos adicionales como 'categoria' o 'expirationDate',
-		// podemos incluirlos. Si no los soporta, el backend normalmente los ignorará.
 		...(product.category ? { categoria: product.category } : {}),
 		...(product.expirationDate ? { expirationDate: product.expirationDate } : {}),
 	};
