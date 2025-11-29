@@ -7,13 +7,21 @@ const Cart = ({ cart, onRemove, onUpdateQuantity }) => {
 
   // Calcular total
   const calculateTotal = () => {
-    return cart
-      .reduce((sum, item) => {
-        // quitamos los puntos y el $ para parsear el precio
-        const price = parseInt(item.price.replace(/[$.]/g, ""));
-        return sum + price * item.quantity;
-      }, 0)
-      .toLocaleString("es-CL", { style: "currency", currency: "CLP" });
+    // Hacemos el cálculo de forma defensiva:
+    // - si el item trae `priceRaw` (número), lo usamos directamente.
+    // - si trae `price` como número lo usamos.
+    // - si trae `price` como string formateada ("$3.590"), la limpiamos.
+    const totalNumber = cart.reduce((sum, item) => {
+      const qty = item.quantity || 1;
+      const priceNum = item.priceRaw ?? (
+        typeof item.price === 'number'
+          ? item.price
+          : Number(String(item.price || '').replace(/[^0-9]/g, '')) || 0
+      );
+      return sum + priceNum * qty;
+    }, 0);
+
+    return totalNumber.toLocaleString("es-CL", { style: "currency", currency: "CLP" });
   };
 
   return (
@@ -35,8 +43,20 @@ const Cart = ({ cart, onRemove, onUpdateQuantity }) => {
             </thead>
             <tbody>
               {cart.map((item) => {
-                const price = parseInt(item.price.replace(/[$.]/g, ""));
-                const subtotal = price * item.quantity;
+                // Normalizar precio de cada item de forma defensiva para los cálculos
+                const qty = item.quantity || 1;
+                const priceNum = item.priceRaw ?? (
+                  typeof item.price === 'number'
+                    ? item.price
+                    : Number(String(item.price || '').replace(/[^0-9]/g, '')) || 0
+                );
+                const subtotal = priceNum * qty;
+
+                // Mostrar precio: preferimos la cadena formateada `item.price` si existe,
+                // sino generamos una a partir de `priceNum`.
+                const displayPrice = (typeof item.price === 'string' && item.price.trim() !== '')
+                  ? item.price
+                  : priceNum.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
 
                 return (
                   <tr key={item.id}>
@@ -53,7 +73,7 @@ const Cart = ({ cart, onRemove, onUpdateQuantity }) => {
                       />
                       {item.title}
                     </td>
-                    <td>{item.price}</td>
+                    <td>{displayPrice}</td>
                     <td>
                       <input
                         type="number"

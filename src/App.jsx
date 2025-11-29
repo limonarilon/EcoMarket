@@ -84,23 +84,60 @@ function App() {
 
   // Agregar producto (con manejo de cantidad)
   const handleAddToCart = (product) => {
-    const existingProduct = cart.find((item) => item.id === product.id);
+    // Normalizar el producto entrante en UN SOLO LUGAR (aquí)
+    // Objetivo: que el carrito siempre reciba el mismo shape de objeto.
+    // Shape decidido para el carrito (compatibilidad con código existente):
+    // {
+    //   id,            // identificador único
+    //   title,         // nombre para mostrar en UI
+    //   price,         // string formateada p.e. "$3.590" (lo que el componente Cart espera)
+    //   priceRaw,      // número entero en CLP, útil para cálculos
+    //   img,           // clave o URL de imagen
+    //   quantity       // cantidad (iniciamos en 1)
+    // }
 
+    // 1) Extraer precio numérico (priceRaw) de posibles formatos entrantes.
+    // - Si la llamada ya nos da `priceRaw`, lo usamos.
+    // - Si `product.price` es número lo usamos tal cual.
+    // - Si `product.price` es string (p.e. "$3.590"), limpiamos caracteres no numéricos.
+    const priceRaw = product.priceRaw ?? (
+      typeof product.price === 'number'
+        ? product.price
+        : Number(String(product.price || '').replace(/[^0-9]/g, '')) || 0
+    );
+
+    // 2) Construir el título que usará la UI (compatibilidad con distintos componentes)
+    const title = product.title ?? product.name ?? product.nombre ?? `Producto ${product.id}`;
+
+    // 3) Construir el objeto normalizado que guardaremos en el carrito.
+    const normalized = {
+      id: product.id,
+      title,
+      // Si ya recibimos una cadena formateada la respetamos, sino generamos una con el utilitario.
+      price: typeof product.price === 'string' && product.price.trim().startsWith('$')
+        ? product.price
+        : formatPriceCLP(priceRaw),
+      priceRaw,
+      img: product.img ?? product.image ?? '',
+      quantity: 1,
+    };
+
+    // 4) Actualizar carrito: si ya existe aumentar cantidad, si no, agregar nuevo item normalizado.
+    const existingProduct = cart.find((item) => item.id === normalized.id);
     let newCart;
     if (existingProduct) {
       newCart = cart.map((item) =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + 1 }
+        item.id === normalized.id
+          ? { ...item, quantity: (item.quantity || 0) + 1 }
           : item
       );
     } else {
-      newCart = [...cart, { ...product, quantity: 1 }];
+      newCart = [...cart, normalized];
     }
 
+    // 5) Guardar en localStorage y mostrar modal con el objeto normalizado.
     updateLocalStorage(newCart);
-
-    // Mostrar modal de confirmación
-    setModalProduct(product);
+    setModalProduct(normalized);
     setShowModal(true);
   };
 
@@ -145,6 +182,14 @@ function App() {
         if (mounted) setProducts(ui);
       } catch (e) {
         console.error('Error cargando productos desde API', e);
+        // Fallback: si el backend no responde, mostramos algunos productos locales mínimos
+        const fallback = [
+          { id: 101, img: 'chcolatee', title: 'Chocolate Orgánico 90% cacao', price: formatPriceCLP(3590), priceRaw: 3590, category: 'dulce' },
+          { id: 201, img: 'quinoa', title: 'Quinoa Premium', price: formatPriceCLP(6000), priceRaw: 6000, category: 'salado' },
+          { id: 401, img: 'jugos', title: 'Jugos prensados', price: formatPriceCLP(5990), priceRaw: 5990, category: 'bebestibles' },
+          { id: 301, img: 'pan', title: 'Pan Integral', price: formatPriceCLP(2500), priceRaw: 2500, category: 'integral' },
+        ];
+        if (mounted) setProducts(fallback);
       }
     }
     loadProducts();
@@ -177,10 +222,7 @@ function App() {
         <Route path="/seguimiento-compra" element={<TrackOrder />} />      
         <Route path="/registrarse" element={<RegisterForm />} />
         <Route path="/iniciar-sesion" element={<InicioSesion />} />
-        <Route path="/categoria/:categoria" element={<Categoria />} />
-        <Route path="/product/:id" element={<ProductDetail />} /> {/* Ruta para el detalle del producto */}
-      
-        <Route path="/product/:id" element={<ProductDetail products={[...products, ...offerProducts]} />} />
+        <Route path="/product/:id" element={<ProductDetail onAddToCart={handleAddToCart} />} />
         <Route path="/carrito" element={
           <PrivateRoute>
             <Cart

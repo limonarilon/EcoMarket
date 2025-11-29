@@ -43,11 +43,9 @@ api.interceptors.request.use((config) => {
 		if (token) {
 			config.headers = config.headers || {};
 			config.headers.Authorization = `Bearer ${token}`;
-			console.log("Token añadido al header:", config.headers.Authorization); // Log para depuración
 		}
-		console.log("Configuración de la solicitud:", config); // Log para depuración
 	} catch (e) {
-		console.error("Error al añadir el token al header:", e); // Log para depuración
+		// silencioso: no rompemos la petición si falla el acceso a localStorage
 	}
 	return config;
 });
