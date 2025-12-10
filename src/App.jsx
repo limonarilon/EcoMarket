@@ -52,8 +52,9 @@ const Home = ({ products, onAddToCart }) => {
 
   return (
     <div>     
-      <Featured products={featuredProducts} onAddToCart={onAddToCart} />
       <Carrusel products={featuredProducts} />
+      <Featured products={featuredProducts} onAddToCart={onAddToCart} />
+      
       <BlogPost />
     </div>
   );
