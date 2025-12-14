@@ -2,12 +2,36 @@ import React, { useState, useEffect } from "react";
 import { getProducts, createProduct, updateProduct, deleteProduct } from "../services/api";
 import { Table, Button, Modal, Form, Alert } from "react-bootstrap";
 
+
+
 const Products = () => {
   // Estado para el modal de confirmación de eliminación
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   // Estado para los productos
   const [products, setProducts] = useState([]);
+
+  //Lee el token JWT del localStorage, decodifica el payload y extrae los roles como un array.
+  function getUserRolesFromToken() {
+    const token = localStorage.getItem('token');
+    if (!token) return [];
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.roles) {
+        return payload.roles.split(',');
+      }
+      return [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  //Define variables booleanas para saber si el usuario tiene cada rol y una para saber si puede gestionar productos.
+  const roles = getUserRolesFromToken();
+  const isAdmin = roles.includes("ADMIN");
+  const isGerente = roles.includes("GERENTE");
+  const isLogistica = roles.includes("LOGISTICA");
+  const puedeGestionar = isAdmin || isGerente; // Solo estos pueden crear/editar/eliminar
 
   useEffect(() => {
     let mounted = true;
@@ -81,8 +105,8 @@ const Products = () => {
     } else {
       const today = new Date();
       const expDate = new Date(formData.expirationDate);
-      today.setHours(0,0,0,0);
-      expDate.setHours(0,0,0,0);
+      today.setHours(0, 0, 0, 0);
+      expDate.setHours(0, 0, 0, 0);
       if (expDate <= today) {
         newErrors.expirationDate = "La fecha debe ser posterior a hoy";
       }
@@ -93,15 +117,15 @@ const Products = () => {
 
   // Función para abrir modal para nuevo producto
   const handleNewProduct = () => {
-  setEditingProduct(null);
-  // Sugerir fecha según categoría
-  const hoy = new Date();
-  let sugerida = "";
-  // Por defecto dulce: 1 semana, salado/integral/bebestibles: 3 meses
-  sugerida = new Date(hoy.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0,10);
-  setFormData({ name: "", price: "", stock: "", expirationDate: sugerida, categoria: "dulce", nuevaCategoria: "" });
-  setErrors({});
-  setShowModal(true);
+    setEditingProduct(null);
+    // Sugerir fecha según categoría
+    const hoy = new Date();
+    let sugerida = "";
+    // Por defecto dulce: 1 semana, salado/integral/bebestibles: 3 meses
+    sugerida = new Date(hoy.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    setFormData({ name: "", price: "", stock: "", expirationDate: sugerida, categoria: "dulce", nuevaCategoria: "" });
+    setErrors({});
+    setShowModal(true);
   };
 
   // Función para abrir modal para editar producto
@@ -121,10 +145,10 @@ const Products = () => {
 
   // Función para cerrar modal
   const handleCloseModal = () => {
-  setShowModal(false);
-  setEditingProduct(null);
-  setFormData({ name: "", price: "", stock: "", expirationDate: "" });
-  setErrors({});
+    setShowModal(false);
+    setEditingProduct(null);
+    setFormData({ name: "", price: "", stock: "", expirationDate: "" });
+    setErrors({});
   };
 
   // Función para manejar cambios en el formulario
@@ -134,7 +158,7 @@ const Products = () => {
       ...prev,
       [name]: value
     }));
-    
+
     // Limpiar error del campo cuando el usuario empiece a escribir
     if (errors[name]) {
       setErrors(prev => ({
@@ -217,13 +241,13 @@ const Products = () => {
 
   // Función para formatear precio
   const formatPrice = (price) => {
-  return `$${price.toLocaleString('es-CL')}`;
+    return `$${price.toLocaleString('es-CL')}`;
   };
 
   return (
     <div>
       <h2 className="mb-4">Gestión de Productos</h2>
-      
+
       {/* Alerta para mensajes */}
       {showAlert && (
         <Alert variant={alertType} className="mb-3">
@@ -231,11 +255,13 @@ const Products = () => {
         </Alert>
       )}
 
-      <div className="d-flex justify-content-end mb-3">
-        <Button variant="success" onClick={handleNewProduct}>
-          + Nuevo Producto
-        </Button>
-      </div>
+      {puedeGestionar && (
+        <div className="d-flex justify-content-end mb-3">
+          <Button variant="success" onClick={handleNewProduct}>
+            + Nuevo Producto
+          </Button>
+        </div>
+      )}
 
       <Table striped bordered hover responsive>
         <thead>
@@ -268,21 +294,32 @@ const Products = () => {
                 </td>
                 <td>{product.expirationDate}</td>
                 <td>
-                  <Button 
-                    size="sm" 
-                    variant="primary" 
-                    className="me-2"
-                    onClick={() => handleEditProduct(product)}
-                  >
-                    Editar
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="danger"
-                    onClick={() => handleDeleteProduct(product.id)}
-                  >
-                    Eliminar
-                  </Button>
+                  {puedeGestionar && (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        className="me-2"
+                        onClick={() => handleEditProduct(product)}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onClick={() => handleDeleteProduct(product.id)}
+                      >
+                        Eliminar
+                      </Button>
+                    </>  
+                  )}    
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </Table>
+
       {/* Modal de confirmación de eliminación */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
@@ -316,13 +353,7 @@ const Products = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </Table>
-
+      
       {/* Modal para agregar/editar producto */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>

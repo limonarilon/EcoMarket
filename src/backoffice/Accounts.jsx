@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Badge, Modal, Form, Alert } from "react-bootstrap";
+import { Table, Button, Badge, Modal, Form } from "react-bootstrap";
 import { getUsers, createUser, updateUser, deleteUser } from "../services/api";
-// Función para extraer el rol del usuario desde el token almacenado en localStorage
-function getUserRoleFromToken() {
+
+// Función para extraer los roles del usuario desde el token almacenado en localStorage
+function getUserRolesFromToken() {
   const token = localStorage.getItem('token');
-  if (!token) return null;
+  if (!token) return [];
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
-    console.log("Payload del token:", payload); // Depuración
-    return payload.role || payload.roles || null;
+    if (payload.roles) {
+      return payload.roles.split(',');
+    }
+    return [];
   } catch (error) {
-    console.error("Error al decodificar el token:", error); // Depuración
-    return null;
+    return [];
   }
 }
 const Accounts = () => {
@@ -41,8 +43,10 @@ const Accounts = () => {
     setShowAlert(true); // Mostrar la alerta
   };
   // Funciones auxiliares
-  //Función para checar si es admin y cargar usuarios dessde el backend
-  const [isAdmin, setIsAdmin] = useState(false);
+  // Obtener roles y determinar si es admin
+  const roles = getUserRolesFromToken();
+  const isAdmin = roles.includes("ADMIN");
+
   useEffect(() => {
     const loadUsers = async () => {
       setLoading(true);
@@ -56,9 +60,6 @@ const Accounts = () => {
       }
     };
     loadUsers();
-
-    // Forzar isAdmin a true para pruebas
-    setIsAdmin(true);
   }, []);
                   <Button size="sm" variant="outline-danger" onClick={() => { setAccountToDelete(account.id); setShowDeleteModal(true); }}>Eliminar</Button>
 
@@ -241,6 +242,26 @@ const Accounts = () => {
     setFormData({ name: "", rut: "", email: "", password: "", confirmPassword: "", rol: "USER" });
     setErrors({});
   };
+  // Si no es admin, mostrar mensaje de acceso denegado
+  // Modal de acceso denegado si no es admin
+  if (!isAdmin) {
+    return (
+      <Modal show={true} backdrop="static" keyboard={false} centered>
+        <Modal.Header>
+          <Modal.Title>Acceso denegado</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          No tienes permisos para ver esta sección.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => window.location.href = '/'}>
+            Ir al inicio
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+
   return (
     <div>
       <h2 className="mb-4">Gestión de Cuentas</h2>
@@ -249,7 +270,9 @@ const Accounts = () => {
           {alertMessage}
         </Alert>
       )}
-      <Button className="mb-3" onClick={handleNewAccount}>Nueva Cuenta</Button>
+      {isAdmin && (
+        <Button className="mb-3" onClick={handleNewAccount}>Nueva Cuenta</Button>
+      )}
       <Table striped bordered hover responsive>
         <thead>
           <tr>
@@ -273,30 +296,35 @@ const Accounts = () => {
                 <td>{account.email}</td>
                 <td>{account.role}</td>
                 <td>
-                  <Button size="sm" variant="outline-primary" className="me-2" onClick={() => handleEditAccount(account)}>Editar</Button>
-                  <Button size="sm" variant="outline-danger" onClick={() => { setAccountToDelete(account.id); setShowDeleteModal(true); }}>Eliminar</Button>                  {/* Modal de confirmación de eliminación */}
-                  <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
-                    <Modal.Header closeButton>
-                      <Modal.Title>Confirmar eliminación</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      ¿Estás seguro de que quieres eliminar esta cuenta?
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-                        Cancelar
-                      </Button>
-                      <Button variant="danger" onClick={() => handleDeleteAccount(accountToDelete)}>
-                        Eliminar
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
+                  {isAdmin && (
+                    <>
+                      <Button size="sm" variant="outline-primary" className="me-2" onClick={() => handleEditAccount(account)}>Editar</Button>
+                      <Button size="sm" variant="outline-danger" onClick={() => { setAccountToDelete(account.id); setShowDeleteModal(true); }}>Eliminar</Button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))
           )}
         </tbody>
       </Table>
+      {/* Modal de confirmación de eliminación fuera del map */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ¿Estás seguro de que quieres eliminar esta cuenta?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={() => handleDeleteAccount(accountToDelete)}>
+            Eliminar
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>
@@ -384,10 +412,10 @@ const Accounts = () => {
             <Form.Group className="mb-3">
               <Form.Label>Rol</Form.Label>
               <Form.Select
-                name="rol" // Cambiado de "role" a "rol"
-                value={formData.rol} // Cambiado de "role" a "rol"
+                name="rol"
+                value={formData.rol}
                 onChange={handleInputChange}
-                isInvalid={!!errors.rol} // Cambiado de "role" a "rol"
+                isInvalid={!!errors.rol}
                 disabled={!isAdmin}
               >
                 <option value="">Selecciona un rol</option>
@@ -395,7 +423,7 @@ const Accounts = () => {
                 <option value="ADMIN">Administrador</option>
               </Form.Select>
               <Form.Control.Feedback type="invalid">
-                {errors.rol} // Cambiado de "role" a "rol"
+                {errors.rol}
               </Form.Control.Feedback>
             </Form.Group>
           </Form>

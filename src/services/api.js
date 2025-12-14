@@ -34,9 +34,8 @@ const api = axios.create({
 	timeout: 10000,
 });
 
-// Interceptor de peticiones: si existe un token en localStorage, lo añade
-// al header Authorization en cada request. Esto facilita usar JWT sin
-// repetir el header en cada llamada.
+
+// Interceptor de peticiones: añade Authorization si hay token
 api.interceptors.request.use((config) => {
 	try {
 		const token = localStorage.getItem('token');
@@ -44,11 +43,24 @@ api.interceptors.request.use((config) => {
 			config.headers = config.headers || {};
 			config.headers.Authorization = `Bearer ${token}`;
 		}
-	} catch (e) {
-		// silencioso: no rompemos la petición si falla el acceso a localStorage
-	}
+	} catch (e) {}
 	return config;
 });
+
+// Interceptor de respuestas: manejo global de 403 Forbidden
+api.interceptors.response.use(
+	response => response,
+	error => {
+		if (error.response && error.response.status === 403) {
+			// Mostrar mensaje de acceso denegado y redirigir
+			if (typeof window !== 'undefined') {
+				alert('Acceso denegado: no tienes permisos para realizar esta acción.');
+				window.location.href = '/error403';
+			}
+		}
+		return Promise.reject(error);
+	}
+);
 
 /**
  * Extrae de forma segura la lista dentro de la propiedad HAL `_embedded`.

@@ -36,9 +36,22 @@ const InicioSesion = () => {
             setShowSuccessModal(true);
             setIsLoading(false); // Finalizar carga
             console.log('Rol recibido en handleSubmit:', role);
-            // Redirigir según el rol
-            if (role === 'ROLE_ADMIN') {
+            // Extraer roles desde el token JWT
+            let userRoles = [];
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (payload.roles) {
+                    userRoles = payload.roles.split(',');
+                }
+            } catch (e) {}
+
+            // Redirigir según el rol prioritario
+            if (userRoles.includes('ADMIN')) {
                 navigate('/backoffice');
+            } else if (userRoles.includes('GERENTE')) {
+                navigate('/backoffice/products');
+            } else if (userRoles.includes('LOGISTICA')) {
+                navigate('/backoffice/pedidos');
             } else {
                 navigate('/');
             }

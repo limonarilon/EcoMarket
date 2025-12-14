@@ -9,9 +9,25 @@ import {
   Menu,
 } from "lucide-react";
 
+// Función para obtener roles desde el token
+function getUserRolesFromToken() {
+  const token = localStorage.getItem('token');
+  if (!token) return [];
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (payload.roles) {
+      return payload.roles.split(',');
+    }
+    return [];
+  } catch (error) {
+    return [];
+  }
+}
+
 const BackofficeLayout = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate();
+  const roles = getUserRolesFromToken();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -20,9 +36,13 @@ const BackofficeLayout = () => {
 
   const toggleSidebar = () => setShowSidebar(!showSidebar);
 
+  // Helpers para visibilidad o clase de ayuda para poder organizarnos mejor
+  const isAdmin = roles.includes("ADMIN");
+  const isGerente = roles.includes("GERENTE");
+  const isLogistica = roles.includes("LOGISTICA");
+
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* Sidebar (versión móvil y escritorio) */}
       <Offcanvas
         show={showSidebar}
         onHide={toggleSidebar}
@@ -34,38 +54,50 @@ const BackofficeLayout = () => {
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Nav className="flex-column">
-            <Nav.Link
-              as={Link}
-              to="/backoffice"
-              className="text-white mb-2"
-              onClick={toggleSidebar}
-            >
-              <LayoutDashboard className="me-2" size={18} /> Dashboard
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/backoffice/products"
-              className="text-white mb-2"
-              onClick={toggleSidebar}
-            >
-              <ShoppingBag className="me-2" size={18} /> Productos
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/backoffice/accounts"
-              className="text-white mb-2"
-              onClick={toggleSidebar}
-            >
-              <Users className="me-2" size={18} /> Cuentas
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/backoffice/boletas"
-              className="text-white mb-2"
-              onClick={toggleSidebar}
-            >
-              <ShoppingBag className="me-2" size={18} /> Boletas / Órdenes
-            </Nav.Link>
+            {/* Dashboard: visible para todos los roles del backoffice */}
+            {(isAdmin || isGerente || isLogistica) && (
+              <Nav.Link
+                as={Link}
+                to="/backoffice"
+                className="text-white mb-2"
+                onClick={toggleSidebar}
+              >
+                <LayoutDashboard className="me-2" size={18} /> Dashboard
+              </Nav.Link>
+            )}
+            {/* Productos: Admin y Gerente pueden gestionar, Logistica solo ver */}
+            {(isAdmin || isGerente || isLogistica) && (
+              <Nav.Link
+                as={Link}
+                to="/backoffice/products"
+                className="text-white mb-2"
+                onClick={toggleSidebar}
+              >
+                <ShoppingBag className="me-2" size={18} /> Productos
+              </Nav.Link>
+            )}
+            {/* Cuentas: solo Admin */}
+            {isAdmin && (
+              <Nav.Link
+                as={Link}
+                to="/backoffice/accounts"
+                className="text-white mb-2"
+                onClick={toggleSidebar}
+              >
+                <Users className="me-2" size={18} /> Cuentas
+              </Nav.Link>
+            )}
+            {/* Boletas/Órdenes: Admin, Gerente y Logistica */}
+            {(isAdmin || isGerente || isLogistica) && (
+              <Nav.Link
+                as={Link}
+                to="/backoffice/boletas"
+                className="text-white mb-2"
+                onClick={toggleSidebar}
+              >
+                <ShoppingBag className="me-2" size={18} /> Boletas / Órdenes
+              </Nav.Link>
+            )}
 
             <hr className="border-secondary my-3" />
 

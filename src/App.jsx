@@ -10,6 +10,7 @@ import Categoria from "./components/Categoria";
 import RegisterForm from "./components/RegisterForm";
 import InicioSesion from "./components/InicioSesion";
 import Products from "./backoffice/Products";
+import Error403 from "./components/Error403";
 import Accounts from "./backoffice/Accounts";
 import Boletas from "./backoffice/Boletas";
 import Dashboard from "./backoffice/Dashboard";
@@ -247,15 +248,28 @@ function App() {
         
         {/*  Rutas privadas (solo admin) */}
         <Route path="/backoffice/*" element={
-          <PrivateRoute adminOnly={true}>
+          <PrivateRoute allowedRoles={['ADMIN', 'GERENTE', 'LOGISTICA']}>
             <BackofficeLayout />
           </PrivateRoute>
         }>
           <Route index element={<Dashboard />} />
-          <Route path="accounts" element={<Accounts />} />
-          <Route path="products" element={<Products />} />
-          <Route path="boletas" element={<Boletas />} />
+          <Route path="accounts" element={
+            <PrivateRoute allowedRoles={['ADMIN']}>
+              <Accounts />
+            </PrivateRoute>
+          } />
+          <Route path="products" element={
+            <PrivateRoute allowedRoles={['ADMIN', 'GERENTE']}>
+              <Products />
+            </PrivateRoute>
+          } />
+          <Route path="boletas" element={
+            <PrivateRoute allowedRoles={['ADMIN', 'GERENTE', 'LOGISTICA']}>
+              <Boletas />
+            </PrivateRoute>
+          } />
         </Route>     
+        <Route path="/error403" element={<Error403 />} />
       </Routes>
       
       <Footer />
