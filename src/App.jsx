@@ -67,9 +67,26 @@ function App() {
   // Estado del carrito
   const [cart, setCart] = useState([]);
 
-  // Estado para modal de confirmación
+
+  // Estado para modal de confirmación de producto
   const [showModal, setShowModal] = useState(false);
   const [modalProduct, setModalProduct] = useState(null);
+
+  // Estado para modal de acceso denegado
+  const [showAccessDenied, setShowAccessDenied] = useState(false);
+  const [accessDeniedMsg, setAccessDeniedMsg] = useState('');
+
+  useEffect(() => {
+    // Escuchar evento global para mostrar modal de acceso denegado
+    function handleAccessDenied(e) {
+      setAccessDeniedMsg(e.detail?.message || 'Acceso denegado.');
+      setShowAccessDenied(true);
+    }
+    window.addEventListener('showAccessDeniedModal', handleAccessDenied);
+    return () => {
+      window.removeEventListener('showAccessDeniedModal', handleAccessDenied);
+    };
+  }, []);
 
   // Cargar carrito de localStorage al iniciar
   useEffect(() => {
@@ -274,7 +291,7 @@ function App() {
       
       <Footer />
 
-      {/* Modal de confirmación */}
+      {/* Modal de confirmación de producto */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Producto agregado</Modal.Title>
@@ -298,6 +315,24 @@ function App() {
           </Button>
           <Button variant="primary" href="/carrito">
             Ir al carrito
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal de acceso denegado global */}
+      <Modal show={showAccessDenied} onHide={() => setShowAccessDenied(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Acceso denegado</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          <p>{accessDeniedMsg}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={() => {
+            setShowAccessDenied(false);
+            window.location.href = '/error403';
+          }}>
+            Ir a página de error
           </Button>
         </Modal.Footer>
       </Modal>

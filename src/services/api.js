@@ -24,7 +24,7 @@ import axios from 'axios';
 */
 
 // URL base configurable por Vite (.env): VITE_API_BASE_URL
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://44.200.179.224:8080';
 
 const api = axios.create({
 	baseURL: BASE_URL,
@@ -54,8 +54,15 @@ api.interceptors.response.use(
 		if (error.response && error.response.status === 403) {
 			// Mostrar mensaje de acceso denegado y redirigir
 			if (typeof window !== 'undefined') {
-				alert('Acceso denegado: no tienes permisos para realizar esta acción.');
-				window.location.href = '/error403';
+				// Disparar un evento global para mostrar modal de acceso denegado
+				const event = new CustomEvent('showAccessDeniedModal', {
+					detail: {
+						message: 'Acceso denegado: no tienes permisos para realizar esta acción.'
+					}
+				});
+				window.dispatchEvent(event);
+				// Opcional: redirigir después de cerrar el modal, o aquí si se requiere
+				// window.location.href = '/error403';
 			}
 		}
 		return Promise.reject(error);
@@ -78,7 +85,8 @@ function extractEmbedded(resp, key) {
  * evitar cambios en el backend. `_links` se mantiene por si es necesario.
  */
 function mapProducto(apiItem) {
-	const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+	// Usar la misma base que axios para evitar inconsistencias
+	const apiBase = BASE_URL;
 
 	
 	const rawImg =
@@ -270,18 +278,12 @@ export async function getOrder(id) {
 
 export async function createOrder(order) {
 	// order puede contener: fecha, estado, total, productos (array)
+	// Solo enviamos los ids de productos para ManyToMany
 	const payload = {
 		...(order.fecha ? { fecha: order.fecha } : {}),
 		...(order.estado ? { estado: order.estado } : {}),
 		...(order.total !== undefined ? { total: order.total } : {}),
-		...(order.productos ? { productos: order.productos.map(p => ({
-			id: p.id,
-			nombre: p.name ?? p.nombre,
-			precio: p.price ?? p.precio,
-			stock: p.stock,
-			img: p.img ?? p.image ?? null,
-			expirationDate: p.expirationDate ?? p.fechaExpiracion ?? null,
-		})) } : {}),
+		...(order.productos ? { productos: order.productos.map(p => ({ id: p.id })) } : {}),
 	};
 
 	const resp = await api.post('/pedidos', payload);
