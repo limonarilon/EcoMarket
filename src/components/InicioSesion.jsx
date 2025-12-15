@@ -41,7 +41,8 @@ const InicioSesion = () => {
             try {
                 const payload = JSON.parse(atob(token.split('.')[1]));
                 if (payload.roles) {
-                    userRoles = payload.roles.split(',');
+                    // Normalizar: quitar prefijo 'ROLE_' si existe
+                    userRoles = payload.roles.split(',').map(role => role.replace(/^ROLE_/, ''));
                 }
             } catch (e) {}
 

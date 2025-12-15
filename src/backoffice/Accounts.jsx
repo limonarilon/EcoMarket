@@ -9,7 +9,8 @@ function getUserRolesFromToken() {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     if (payload.roles) {
-      return payload.roles.split(',');
+      // Normalizar: quitar prefijo 'ROLE_' si existe
+      return payload.roles.split(',').map(role => role.replace(/^ROLE_/, ''));
     }
     return [];
   } catch (error) {

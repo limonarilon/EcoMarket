@@ -18,7 +18,8 @@ const Products = () => {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload.roles) {
-        return payload.roles.split(',');
+        // Normalizar: quitar prefijo 'ROLE_' si existe
+        return payload.roles.split(',').map(role => role.replace(/^ROLE_/, ''));
       }
       return [];
     } catch (error) {
@@ -441,7 +442,7 @@ const Products = () => {
               <Form.Control
                 type="number"
                 name="price"
-                value={formData.price}
+                value={formData.price ?? ''}
                 onChange={handleInputChange}
                 isInvalid={!!errors.price}
                 placeholder="Ingrese el precio (sin puntos ni comas)"

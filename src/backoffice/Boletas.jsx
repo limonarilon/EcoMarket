@@ -10,7 +10,8 @@ function getUserRolesFromToken() {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     if (payload.roles) {
-      return payload.roles.split(',');
+      // Normalizar: quitar prefijo 'ROLE_' si existe
+      return payload.roles.split(',').map(role => role.replace(/^ROLE_/, ''));
     }
     return [];
   } catch (error) {
@@ -90,10 +91,16 @@ const Boletas = () => {
   const handleSaveEdit = async () => {
   if (editingBoleta) {
     try {
+      // Formatear fecha como LocalDateTime (YYYY-MM-DDTHH:mm:ss)
+      let fechaFormateada = editingBoleta.fecha;
+      if (fechaFormateada && !fechaFormateada.includes('T')) {
+        fechaFormateada = fechaFormateada + 'T00:00:00';
+      }
       const updatedBoleta = await updateOrder(editingBoleta.numero, {
         total: editingBoleta.monto,
-        fecha: editingBoleta.fecha,
-        estado: editingBoleta.estado
+        fecha: fechaFormateada,
+        estado: editingBoleta.estado,
+        productos: editingBoleta.productos || []
       });
       setBoletas(prev => prev.map(b => (b.numero === updatedBoleta.id ? {
         ...b,
@@ -292,41 +299,11 @@ const Boletas = () => {
               ))
             )}
 
-            {/* Dropdown para agregar producto */}
-            {puedeEditarEliminar && (
-              <Form className="mt-3">
-                <Form.Group controlId="agregarProducto">
-                  <Form.Label>Agregar producto a la orden</Form.Label>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <Form.Select
-                      value={productoAAgregar}
-                      onChange={e => setProductoAAgregar(e.target.value)}
-                    >
-                      <option value="">Selecciona un producto</option>
-                      {productosDisponibles.map(prod => (
-                        <option key={prod.id} value={prod.id}>
-                          {prod.name} (${prod.price?.toLocaleString("es-CL")})
-                        </option>
-                      ))}
-                    </Form.Select>
-                    <Button
-                      variant="success"
-                      size="sm"
-                      disabled={!productoAAgregar}
-                      onClick={async () => {
-                        await handleAddProduct(selectedBoleta.numero, productoAAgregar);
-                        setProductoAAgregar("");
-                        // Refrescar productos en el modal
-                        const actualizada = boletas.find(b => b.numero === selectedBoleta.numero);
-                        setSelectedBoleta(actualizada);
-                      }}
-                    >
-                      Agregar
-                    </Button>
-                  </div>
-                </Form.Group>
-              </Form>
-            )}
+            {/*
+              Funcionalidad de agregar producto a pedido deshabilitada temporalmente por motivos de integridad y arquitectura.
+              Para habilitar, refactorizar el backend a una entidad intermedia PedidoProducto con campo cantidad.
+              Solo visible para desarrolladores, no para usuarios finales.
+            */}
           </Modal.Body>
 
           <Modal.Footer>

@@ -3,13 +3,14 @@ import { Navigate } from "react-router-dom";
 
 function getUserRoleFromToken() {
     const token = localStorage.getItem('token');
-    if (!token) return null;
+    if (!token) return [];
 
     try {
         const payload = JSON.parse(atob(token.split('.')[1])); // Decodificar el payload del token
         // El claim 'roles' es un string separado por comas
         if (payload.roles) {
-            return payload.roles.split(',');
+            // Normalizar: quitar prefijo 'ROLE_' si existe
+            return payload.roles.split(',').map(role => role.replace(/^ROLE_/, ''));
         }
         return [];
     } catch (error) {
@@ -25,10 +26,11 @@ const PrivateRoute = ({ children, adminOnly = false, allowedRoles }) => {
         return <Navigate to="/iniciar-sesion" replace />;
     }
 
-    const role = getUserRoleFromToken();
-    console.log('Roles del usuario:', role); // Depuración
+    const roles = getUserRoleFromToken();
+    console.log('Roles del usuario:', roles); // Depuración
 
     // Si se usa allowedRoles, verificar si el usuario tiene alguno de los roles permitidos
+
     if (allowedRoles && Array.isArray(allowedRoles)) {
         const hasAccess = roles.some(role => allowedRoles.includes(role));
         if (!hasAccess) {
