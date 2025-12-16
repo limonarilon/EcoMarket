@@ -19,7 +19,7 @@ import PrivateRoute from "./routes/PrivateRoute";
 import Blog from "./components/Blog";
 import { getProducts } from "./services/api";
 import formattedImages, { getImageSrc } from "./components/Images";
-import Carrusel from "./components/carrusel";
+import Carrusel from "./components/Carrusel.jsx";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 // import Ofertas from "./components/Ofertas";
