@@ -108,11 +108,30 @@ function mapProducto(apiItem) {
 			: `${apiBase}/productos/uploads/${rawImg}`;
 	}
 
+	// Imagen nutricional
+	const rawNutri =
+		apiItem.imgNutricional ??
+		apiItem.imagenNutricional ??
+		null;
+
+	let imgNutricional = null;
+
+	if (rawNutri) {
+		const isAbsolute =
+			rawNutri.startsWith('http://') ||
+			rawNutri.startsWith('https://');
+
+		imgNutricional = isAbsolute
+			? rawNutri
+			: `${apiBase}/productos/uploads/${rawNutri}`;
+	}
+
 	return {
 		id: apiItem.id,
 		name: apiItem.nombre,
 		price: apiItem.precio,
 		img,
+		imgNutricional,
 		stock: apiItem.stock,
 		expirationDate: apiItem.expirationDate ?? apiItem.fechaExpiracion ?? null,
 		category: apiItem.categoria ?? null,
@@ -176,15 +195,23 @@ export async function createProduct(product) {
 	return mapProducto(resp.data);
 }
 
-export async function updateProduct(id, product) {
-	const payload = {
-		nombre: product.name,
-		precio: product.price,
-		stock: product.stock,
-		...(product.category ? { categoria: product.category } : {}),
-		...(product.expirationDate ? { expirationDate: product.expirationDate } : {}),
-	};
-	const resp = await api.put(`/productos/${id}`, payload);
+// Si isMultipart es true, product es un FormData
+export async function updateProduct(id, product, isMultipart = false) {
+	let resp;
+	if (isMultipart) {
+		resp = await api.put(`/productos/${id}`, product, {
+			headers: { 'Content-Type': 'multipart/form-data' }
+		});
+	} else {
+		const payload = {
+			nombre: product.name,
+			precio: product.price,
+			stock: product.stock,
+			...(product.category ? { categoria: product.category } : {}),
+			...(product.expirationDate ? { expirationDate: product.expirationDate } : {}),
+		};
+		resp = await api.put(`/productos/${id}`, payload);
+	}
 	return mapProducto(resp.data);
 }
 

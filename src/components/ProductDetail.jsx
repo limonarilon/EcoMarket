@@ -95,6 +95,19 @@ const ProductDetail = ({ onAddToCart }) => {
             Este producto orgánico es ideal para una alimentación saludable.
             Libre de químicos y cultivado de manera sustentable.
           </p>
+          {/* Imagen nutricional */}
+          {product.imgNutricional && (
+            <>
+              <hr />
+              <h5>Información nutricional</h5>
+              <img
+                src={product.imgNutricional}
+                alt="Información nutricional"
+                className="img-fluid rounded"
+                style={{ maxWidth: "100%", marginTop: "10px" }}
+              />
+            </>
+          )}
           <hr />
           <h5>Opiniones</h5>
           <div className="mb-2">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Badge, Modal, Form } from "react-bootstrap";
+import { Table, Button, Badge, Modal, Form, Alert } from "react-bootstrap";
 import { getUsers, createUser, updateUser, deleteUser } from "../services/api";
 
 // Función para extraer los roles del usuario desde el token almacenado en localStorage
@@ -422,6 +422,8 @@ const Accounts = () => {
                 <option value="">Selecciona un rol</option>
                 <option value="USER">Usuario</option>
                 <option value="ADMIN">Administrador</option>
+                <option value="GERENTE">Gerente</option>
+                <option value="LOGISTICA">Logística</option>
               </Form.Select>
               <Form.Control.Feedback type="invalid">
                 {errors.rol}

@@ -1,15 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { getProducts, createProduct, updateProduct, deleteProduct } from "../services/api";
 import { Table, Button, Modal, Form, Alert } from "react-bootstrap";
-
-
+import { getCategoryWarning } from '../utils/categoryWarning';
 
 const Products = () => {
-  // Estado para el modal de confirmación de eliminación
+  // Estados principales
+  const [showCategoryWarning, setShowCategoryWarning] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
-  // Estado para los productos
   const [products, setProducts] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const categoriasFijas = ["dulce", "salado", "integral", "bebestibles"];
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    stock: "",
+    expirationDate: "",
+    categoria: "dulce",
+    nuevaCategoria: "",
+    img: null,
+    imgNutricional: null
+  });
+  const [errors, setErrors] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("success");
+
+  // Advertencia de categoría (debe ir después de definir editingProduct y formData)
+  useEffect(() => {
+    // Solo advertir si el nombre cambia y no está editando
+    if (!editingProduct && formData.name) {
+      const uncategorized = getCategoryWarning(formData.name, '');
+      setShowCategoryWarning(uncategorized);
+    } else {
+      setShowCategoryWarning(false);
+    }
+  }, [formData.name, editingProduct]);
 
   //Lee el token JWT del localStorage, decodifica el payload y extrae los roles como un array.
   function getUserRolesFromToken() {
@@ -26,14 +53,11 @@ const Products = () => {
       return [];
     }
   }
-
-  //Define variables booleanas para saber si el usuario tiene cada rol y una para saber si puede gestionar productos.
   const roles = getUserRolesFromToken();
   const isAdmin = roles.includes("ADMIN");
   const isGerente = roles.includes("GERENTE");
   const isLogistica = roles.includes("LOGISTICA");
   const puedeGestionar = isAdmin || isGerente; // Solo estos pueden crear/editar/eliminar
-
   useEffect(() => {
     let mounted = true;
     async function load() {
@@ -55,24 +79,7 @@ const Products = () => {
     return () => { mounted = false; };
   }, []);
 
-  // Estados para el modal
-  const [showModal, setShowModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
-  const categoriasFijas = ["dulce", "salado", "integral", "bebestibles"];
-  const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    stock: "",
-    expirationDate: "",
-    categoria: "dulce",
-    nuevaCategoria: ""
-  });
-
-  // Estados para validación y mensajes
-  const [errors, setErrors] = useState({});
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertType, setAlertType] = useState("success");
+ 
 
   // Función para generar nuevo ID
   const generateNewId = () => {
@@ -180,25 +187,54 @@ const Products = () => {
     (async () => {
       try {
         if (editingProduct) {
-          // Edición: solo datos simples y nombre de imagen
-          const productData = {
-            name: formData.name.trim(),
-            price: parseInt(formData.price),
-            stock: parseInt(formData.stock),
-            expirationDate: formData.expirationDate,
-            categoria: categoriaFinal,
-            img: formData.img || ""
-          };
-          const updated = await updateProduct(editingProduct.id, productData);
-          setProducts(prev => prev.map(p => p.id === updated.id ? {
-            ...p,
-            name: updated.name || productData.name,
-            price: updated.price !== undefined ? updated.price : productData.price,
-            stock: updated.stock !== undefined ? updated.stock : productData.stock,
-            expirationDate: updated.expirationDate || productData.expirationDate,
-            img: updated.img || productData.img
-          } : p));
-          showAlertMessage("Producto actualizado exitosamente", "success");
+          // Edición: si hay nueva imagen o imagen nutricional, enviar FormData
+          if (formData.img instanceof File || formData.imgNutricional instanceof File) {
+            const fd = new FormData();
+            const productObj = {
+              name: formData.name.trim(),
+              price: parseInt(formData.price),
+              stock: parseInt(formData.stock),
+              expirationDate: formData.expirationDate,
+              categoria: categoriaFinal
+            };
+            fd.append("producto", new Blob([JSON.stringify(productObj)], { type: 'application/json' }));
+            if (formData.img instanceof File) {
+              fd.append("img", formData.img);
+            }
+            if (formData.imgNutricional instanceof File) {
+              fd.append("imgNutricional", formData.imgNutricional);
+            }
+            const updated = await updateProduct(editingProduct.id, fd, true); // true: multipart
+            setProducts(prev => prev.map(p => p.id === updated.id ? {
+              ...p,
+              name: updated.name || productObj.name,
+              price: updated.price !== undefined ? updated.price : productObj.price,
+              stock: updated.stock !== undefined ? updated.stock : productObj.stock,
+              expirationDate: updated.expirationDate || productObj.expirationDate,
+              img: updated.img || productObj.img
+            } : p));
+            showAlertMessage("Producto actualizado exitosamente", "success");
+          } else {
+            // Edición simple (sin cambio de imagen)
+            const productData = {
+              name: formData.name.trim(),
+              price: parseInt(formData.price),
+              stock: parseInt(formData.stock),
+              expirationDate: formData.expirationDate,
+              categoria: categoriaFinal,
+              img: formData.img || ""
+            };
+            const updated = await updateProduct(editingProduct.id, productData);
+            setProducts(prev => prev.map(p => p.id === updated.id ? {
+              ...p,
+              name: updated.name || productData.name,
+              price: updated.price !== undefined ? updated.price : productData.price,
+              stock: updated.stock !== undefined ? updated.stock : productData.stock,
+              expirationDate: updated.expirationDate || productData.expirationDate,
+              img: updated.img || productData.img
+            } : p));
+            showAlertMessage("Producto actualizado exitosamente", "success");
+          }
         } else {
           // Creación: enviar FormData con JSON y archivo
           const fd = new FormData();
@@ -212,6 +248,9 @@ const Products = () => {
           fd.append("producto", new Blob([JSON.stringify(productObj)], { type: 'application/json' }));
           if (formData.img) {
             fd.append("img", formData.img);
+          }
+          if (formData.imgNutricional) {
+            fd.append("imgNutricional", formData.imgNutricional);
           }
           const created = await createProduct(fd);
           const newProduct = {
@@ -364,6 +403,11 @@ const Products = () => {
         </Modal.Header>
         <Modal.Body>
           <Form>
+            {showCategoryWarning && (
+              <Alert variant="warning">
+                <strong>Advertencia:</strong> El producto no será categorizado automáticamente y no aparecerá en ninguna categoría. Revisa el nombre o agrega una palabra clave relevante.
+              </Alert>
+            )}
             <Form.Group className="mb-3">
               <Form.Label>Categoría *</Form.Label>
               <Form.Select
@@ -388,40 +432,53 @@ const Products = () => {
               )}
             </Form.Group>
             {/* Campo de imagen solo al crear producto */}
-            {!editingProduct ? (
-              <Form.Group className="mb-3">
-                <Form.Label>Imagen del Producto</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="img"
-                  accept="image/*"
-                  onChange={e => {
-                    const file = e.target.files[0];
-                    setFormData(prev => ({
-                      ...prev,
-                      img: file
-                    }));
-                  }}
-                />
-                <Form.Text className="text-muted">
-                  Opcional. Formatos permitidos: JPG, PNG, WEBP.
-                </Form.Text>
-              </Form.Group>
-            ) : (
-              <Form.Group className="mb-3">
-                <Form.Label>Nombre de la imagen</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="img"
-                  value={formData.img || ''}
-                  onChange={handleInputChange}
-                  placeholder="Nombre del archivo de imagen (ej: producto.jpg)"
-                />
-                <Form.Text className="text-muted">
-                  Solo puedes cambiar el nombre, no subir una nueva imagen.
-                </Form.Text>
-              </Form.Group>
-            )}
+            {/* Permitir subir imagen y nutricional tanto en creación como edición */}
+            <Form.Group className="mb-3">
+              <Form.Label>Imagen del Producto</Form.Label>
+              <Form.Control
+                type="file"
+                name="img"
+                accept="image/*"
+                onChange={e => {
+                  const file = e.target.files[0];
+                  setFormData(prev => ({
+                    ...prev,
+                    img: file
+                  }));
+                }}
+              />
+              {editingProduct && editingProduct.img && typeof editingProduct.img === 'string' && (
+                <div className="mt-1">
+                  <span className="text-muted">Actual: {editingProduct.img}</span>
+                </div>
+              )}
+              <Form.Text className="text-muted">
+                Opcional. Formatos permitidos: JPG, PNG, WEBP.
+              </Form.Text>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Imagen Nutricional</Form.Label>
+              <Form.Control
+                type="file"
+                name="imgNutricional"
+                accept="image/*"
+                onChange={e => {
+                  const file = e.target.files[0];
+                  setFormData(prev => ({
+                    ...prev,
+                    imgNutricional: file
+                  }));
+                }}
+              />
+              {editingProduct && editingProduct.imgNutricional && typeof editingProduct.imgNutricional === 'string' && (
+                <div className="mt-1">
+                  <span className="text-muted">Actual: {editingProduct.imgNutricional}</span>
+                </div>
+              )}
+              <Form.Text className="text-muted">
+                Opcional. Imagen de información nutricional (JPG, PNG, WEBP).
+              </Form.Text>
+            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Nombre del Producto *</Form.Label>
               <Form.Control
