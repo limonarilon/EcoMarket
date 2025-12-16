@@ -70,6 +70,7 @@ it('muestra mensaje de error cuando la API devuelve 403', async () => {
     </MemoryRouter>
   );
 
-  // Aserción: esperamos que aparezca el texto de alerta "Error al cargar usuarios"
-  expect(await screen.findByText(/error al cargar usuarios/i)).toBeInTheDocument();
+  // Aserción: esperamos que aparezca el modal de acceso denegado
+  expect(await screen.findByText(/acceso denegado/i)).toBeInTheDocument();
+  expect(await screen.findByText(/no tienes permisos para ver esta sección/i)).toBeInTheDocument();
 });
